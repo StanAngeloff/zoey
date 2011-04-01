@@ -1,0 +1,948 @@
+@import 'compass';
+
+@include global-reset;
+
+$header_height:   32px;
+$footer_height:   38px;
+$nav_height:      38px;
+$button_height:   28px;
+$label_height:    28px;
+$input_height:    32px;
+$icon_size:       16px;
+$large_icon_size: 28px;
+
+$highlight_color: #333;
+$light_color:     #fff;
+$dark_color:      #000;
+$error_color:     #faa;
+
+$font_family: 'Trebuchet MS', TrebuchetMS, sans-serif;
+$font_size:   16px;
+
+$theme_a: #000;
+$theme_b: #58b;
+$theme_c: #ccc;
+$theme_e: #fd4;
+$theme_d: #fff;
+
+$icons: sprite-map('icons/*.png', $spacing: ($icon_size * 8));
+
+@mixin themes($before: false, $after: false) {
+  @if ($before == false) {
+    $before: '&.theme-';
+  }
+  @if ($after == false) {
+    $after: '';
+  }
+  #{$before}a#{$after} { background-color: $theme_a; }
+  #{$before}b#{$after} { background-color: $theme_b; }
+  #{$before}c#{$after} { background-color: $theme_c; }
+  #{$before}d#{$after} { background-color: $theme_d; }
+  #{$before}e#{$after} { background-color: $theme_e; }
+}
+
+@mixin font {
+  font: normal #{$font_size}/($font_size * 1.125) $font_family;
+}
+
+@mixin button-icon($name, $height: false, $x: false, $y: false, $support: true) {
+  @if ($height == false) {
+    $height: $button_height - 4px;
+  }
+  @if ($x == false) {
+    $x: 10px;
+  }
+  @if ($y == false) {
+    $y: ($height - image-height(sprite-file($icons, $name))) / 2;
+  }
+
+  background-position: sprite-position($icons, $name, $x, $y), 0 0;
+
+  @if $support {
+    &:active { background-position: sprite-position($icons, $name, $x, 1px + $y), 0 0; }
+
+    &.icon-right {
+      background-position: sprite-position($icons, $name, 100%, $y), 0 0;
+      &:active { background-position: sprite-position($icons, $name, 100%, 1px + $y), 0 0; }
+    }
+  }
+}
+
+body {
+  background: $theme_c;
+  @include font;
+  margin: 0;
+  padding: 0;
+}
+
+.collapsed {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.ui-disabled,
+.ui-disabled:hover,
+.ui-disabled:active {
+  @include opacity(0.5);
+  @include text-shadow(none);
+  cursor: not-allowed;
+}
+
+@-webkit-keyframes delayedFadeIn {
+  0%   { @include opacity(0.01); }
+  50%  { @include opacity(0.01); }
+  100% { @include opacity(1); }
+}
+
+@-webkit-keyframes rotate {
+  0%   { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+.ui-loading {
+  cursor: wait;
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  background-color: rgba($dark_color, 0.5);
+  -webkit-animation-name: delayedFadeIn;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+
+  .ui-spinner {
+    $size: 64px;
+    background: transparent image-url('images/background-loading_spinner.png') no-repeat 0 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -$size / 2;
+    margin-top: -$size / 2;
+    width: $size;
+    height: $size;
+    -webkit-animation-name: rotate;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }
+}
+
+.ui-header {
+  min-height: $header_height;
+  background: transparent none repeat-x 0 0;
+  @include background-image(linear-gradient(
+    rgba($light_color, 0.25),
+    rgba($light_color, 0) 50%
+  ));
+  position: relative;
+  z-index: 200;
+  @include text-shadow(0 1px 0 $dark_color);
+
+  &.ui-fixed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  h1, h2 {
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid rgba($light_color, 0.1);
+    line-height: $header_height - 1px;
+    color: $light_color;
+
+    a {
+      color: $light_color;
+      text-decoration: none;
+    }
+  }
+
+  @include themes;
+
+  &.theme-e,
+  &.theme-d {
+    @include text-shadow(0 1px 0 $light_color);
+
+    h1,   h2,
+    h1 a, h2 a {
+      color: $dark_color;
+    }
+  }
+
+  .ui-button {
+    float: left;
+    margin-left: 5px;
+    margin-top: ($header_height - $button_height) / 2;
+
+    &.align-right {
+      float: right;
+      margin-left: 0;
+      margin-right: 5px;
+    }
+  }
+}
+
+.ui-navbar {
+  min-height: $nav_height;
+  @include text-shadow(0 1px 0 $dark_color);
+  @include clearfix;
+
+  li {
+    float: left;
+    text-align: center;
+  }
+
+  a {
+    display: block;
+    background: transparent none;
+    background-repeat: no-repeat, repeat-x;
+    background-position: -$icon_size 0, 0 0;
+    @include background-image($icons, linear-gradient(
+      rgba($light_color, 0.25),
+      rgba($light_color, 0) 50%
+    ));
+    color: $light_color;
+    text-decoration: none;
+    line-height: $nav_height - 4px;
+    border-top: 1px solid rgba($dark_color, 0.1);
+    border-right: 1px solid rgba($light_color, 0.25);
+    border-bottom: 1px solid rgba($light_color, 0.1);
+    border-left: 1px solid rgba($dark_color, 0.25);
+    padding: 1px 0;
+    @include ellipsis;
+
+    &.ui-icon {
+      padding-top: $large_icon_size + 6px;
+      position: relative;
+
+      // &.ui-icon-custom { @include button-icon('custom', $nav_height, 50%, 10px); }
+    }
+  }
+
+  @include themes(false, ' a');
+
+  li a:hover {
+    background-color: rgba($highlight_color, 0.25);
+  }
+
+  li a:active {
+    @include background-image($icons, linear-gradient(
+      rgba($dark_color, 0.25),
+      rgba($dark_color, 0) 50%
+    ));
+    padding-top: 2px;
+    padding-bottom: 0;
+  }
+
+  li a.ui-icon:active {
+    padding-top: $large_icon_size + 7px;
+  }
+
+  li a.highlight,
+  li a.highlight:hover {
+    background-color: $highlight_color;
+    @include background-image($icons, linear-gradient(
+      rgba($light_color, 0.25),
+      rgba($light_color, 0) 50%,
+      rgba($dark_color, 0.1) 100%
+    ));
+  }
+}
+
+.ui-header {
+  .ui-navbar a {
+    height: $nav_height - 1px;
+    border-top-width: 0;
+  }
+}
+
+.ui-body {
+  display: block;
+  @include border-radius(10px);
+  margin: 10px;
+  padding: 10px;
+  background: transparent none repeat-x 0 0;
+  @include background-image(linear-gradient(
+    rgba($light_color, 0.5),
+    rgba($light_color, 0) 50%
+  ));
+  border: 1px solid rgba($dark_color, 0.25);
+
+  @include themes('&.ui-body-');
+
+  .ui-body {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  &.align-middle {
+    font-size: 80%;
+  }
+
+  &.ui-body-a,
+  &.ui-body-b { color: $light_color; }
+  &.ui-body-d { background-image: none; }
+}
+
+.ui-content {
+  position: relative;
+  z-index: 100;
+
+  a {
+    position: relative;
+    z-index: 10;
+  }
+
+  .align-middle {
+    text-align: center;
+  }
+
+  .ui-body {
+    h2 {
+      font-size: 150%;
+      text-align: center;
+    }
+
+    h3 {
+      font-size: 140%;
+      text-align: center;
+    }
+
+    h4 { font-size: 130%; }
+    h5 { font-size: 120%; }
+    h5 { font-size: 110%; }
+
+    h2, h3, h4, h5, h6,
+    ul, ol,
+    p,
+    table,
+    form {
+      margin: 10px 0;
+    }
+
+    strong { font-weight: bold; }
+    em     { font-style: italic; }
+
+    table {
+      width: 100%;
+      border-spacing: 0;
+      border-top: 1px dotted rgba($dark_color, 0.25);
+
+      thead, th { font-weight: bold; }
+
+      th, td {
+        border-bottom: 1px dotted rgba($dark_color, 0.25);
+        padding: 5px;
+        vertical-align: top;
+      }
+
+      .odd td, .odd th {
+        background-color: rgba($dark_color, 0.05);
+      }
+
+      tfoot td {
+        text-align: center;
+        font-size: 80%;
+      }
+    }
+
+    label {
+      $padding: ($label_height - $font_size * 1.125) / 2;
+      display: block;
+      padding-top: $padding;
+      padding-bottom: $padding;
+
+      &.inline {
+        display: inline;
+        padding-left: 5px;
+      }
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      vertical-align: middle;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="password"],
+    textarea,
+    select {
+      @include font;
+      background-color: $light_color;
+      border: 1px solid rgba($dark_color, 0.5);
+      @include border-radius(5px);
+      color: $dark_color;
+      margin: 0;
+      height: $input_height;
+      padding: 2px 5px;
+      display: block;
+      width: 100%;
+      @include box-sizing(border-box);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="password"],
+    textarea {
+      @include box-shadow(
+        0 1px 2px rgba($dark_color, 0.25) inset
+      );
+      -webkit-appearance: none;
+
+      &:focus {
+        outline: none;
+        @include box-shadow(
+          0 1px 2px rgba($dark_color, 0.1) inset,
+          0 0   8px rgba($highlight_color, 0.75)
+        );
+      }
+    }
+
+    select {
+      &:focus {
+        outline: none;
+        @include box-shadow(0 0 8px rgba($highlight_color, 0.75));
+      }
+    }
+  }
+}
+
+.ui-grid-a,
+.ui-grid-b {
+  @include clearfix;
+}
+.ui-block-a,
+.ui-block-b,
+.ui-block-c {
+  float: left;
+}
+
+.ui-grid-a .ui-block-a { clear: left; }
+.ui-grid-a .ui-block-a,
+.ui-grid-a .ui-block-b {
+  width: 50%;
+  @include box-sizing(border-box);
+}
+.ui-grid-a .ui-block-a { padding-right: 5px; }
+.ui-grid-a .ui-block-b { padding-left:  5px; }
+
+.ui-grid-b .ui-block-a { clear: left; }
+.ui-grid-b .ui-block-a,
+.ui-grid-b .ui-block-b,
+.ui-grid-b .ui-block-c {
+  width: 33.333%;
+  @include box-sizing(border-box);
+}
+.ui-grid-b .ui-block-a { padding-right: 5px; }
+.ui-grid-b .ui-block-b { padding-right: 5px; padding-left: 5px; }
+.ui-grid-b .ui-block-c { padding-left:  5px; }
+
+.ui-list-view {
+
+  &.ui-inset {
+    border-top: 1px solid rgba($dark_color, 0.25);
+    border-right: 1px solid rgba($dark_color, 0.25);
+    border-left: 1px solid rgba($dark_color, 0.25);
+    @include border-radius(10px);
+
+    li:first-child,
+    li.ui-li-block:first-child .ui-a-block {
+      border-top-left-radius: 10px;
+      -webkit-border-top-left-radius: 10px;
+      -moz-border-radius-topleft: 10px;
+      -khtml-border-top-left-radius: 10px;
+      -ms-border-top-left-radius: 10px;
+      -o-border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      -webkit-border-top-right-radius: 10px;
+      -moz-border-radius-topright: 10px;
+      -khtml-border-top-right-radius: 10px;
+      -ms-border-top-right-radius: 10px;
+      -o-border-top-right-radius: 10px;
+    }
+
+    li:last-child,
+    li.ui-li-block:last-child .ui-a-block {
+      border-bottom-left-radius: 10px;
+      -webkit-border-bottom-left-radius: 10px;
+      -moz-border-radius-topleft: 10px;
+      -khtml-border-bottom-left-radius: 10px;
+      -ms-border-bottom-left-radius: 10px;
+      -o-border-bottom-left-radius: 10px;
+    }
+
+    li:last-child,
+    li.ui-li-block:last-child .ui-a-block,
+    li.ui-li-block:last-child .ui-button {
+      border-bottom-right-radius: 10px;
+      -webkit-border-bottom-right-radius: 10px;
+      -moz-border-radius-topright: 10px;
+      -khtml-border-bottom-right-radius: 10px;
+      -ms-border-bottom-right-radius: 10px;
+      -o-border-bottom-right-radius: 10px;
+    }
+  }
+
+  li {
+    @include clearfix;
+    background: transparent none repeat-x 0 100%;
+    @include background-image(linear-gradient(
+      rgba($dark_color, 0)    50%,
+      rgba($dark_color, 0.05) 100%
+    ));
+    border-bottom: 1px solid rgba($dark_color, 0.25);
+    position: relative;
+    padding: 5px 10px;
+
+    img {
+      float: left;
+      margin-right: 5px;
+    }
+
+    &.ui-li-block {
+      background-image: none;
+
+      .ui-a-block {
+        background: transparent none;
+        background-repeat: no-repeat, repeat-x;
+        background-position: -$icon_size 0, 0 0;
+        @include background-image($icons, linear-gradient(
+          rgba($dark_color, 0)    50%,
+          rgba($dark_color, 0.05) 100%
+        ));
+        display: block;
+        margin: -5px -10px;
+        padding: 5px 10px;
+
+        &:hover {
+          @include background-image($icons, linear-gradient(
+            rgba($dark_color, 0)    50%,
+            rgba($dark_color, 0.1) 100%
+          ));
+        }
+
+        &:active {
+          @include background-image($icons, linear-gradient(
+            rgba($dark_color, 0.1),
+            rgba($dark_color, 0.05)
+          ));
+          padding-top: 6px;
+          padding-bottom: 4px;
+        }
+      }
+
+      &.ui-icon {
+        .ui-a-block {
+          padding-left: 5px + 10px + $icon_size + 10px;
+        }
+
+        $height: $font_size * 1.125;
+        $y: (40px - $icon_size) / 2;
+
+        &.ui-icon-arrow-l .ui-a-block { @include button-icon('arrow-l-dark', 10px + $height, $y); }
+      }
+
+      &.highlight {
+        background-color: $highlight_color;
+
+        .ui-a-block {
+          @include background-image($icons, linear-gradient(
+            rgba($light_color, 0.25),
+            rgba($dark_color, 0.25)
+          ));
+          @include text-shadow(0 -1px 1px $dark_color);
+          color: $light_color;
+        }
+      }
+    }
+  }
+
+  @include themes(false, ' li');
+  li { @include themes; }
+
+  a {
+    color: $dark_color;
+    text-decoration: none;
+  }
+
+  .ui-li-count,
+  .ui-button {
+    @include inline-block;
+    border-left: 1px solid rgba($dark_color, 0.25);
+    position: absolute;
+    z-index: 15;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 40px;
+  }
+
+  .ui-li-count {
+    background: rgba($dark_color, 0.05) none repeat-x 0 100%;
+    cursor: pointer;
+    padding: 5px 0;
+    text-align: center;
+    @include text-shadow(0 1px 0 $light_color);
+  }
+
+  .ui-button {
+    @include border-radius(0);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    margin: 0;
+    height: auto;
+
+    &.ui-icon {
+      @include hide-text;
+      padding: 0;
+
+      &.icon-right { padding: 0; }
+    }
+  }
+
+  .ui-list-divider {
+    background-position: 0 0;
+    @include background-image(linear-gradient(
+      rgba($light_color, 0.25),
+      rgba($light_color, 0) 49%,
+      rgba($dark_color, 0.05) 51%,
+      rgba($dark_color, 0) 100%
+    ));
+    border-top: 1px solid rgba($light_color, 0.25);
+    color: $light_color;
+    font-weight: bold;
+    padding: 5px 10px;
+    @include text-shadow(0 1px 0 $dark_color);
+  }
+}
+
+.ui-field-contain {
+  position: relative;
+}
+
+.ui-button {
+  $height: $button_height - 4px;
+
+  display: block;
+  height: $height;
+  @include font;
+  line-height: $height;
+  padding: 1px 10px;
+  margin: 0;
+  text-align: center;
+  @include border-radius(5px);
+  border-top: 1px solid rgba($dark_color, 0.25);
+  border-right: 1px solid rgba($dark_color, 0.25);
+  border-bottom: 1px solid rgba($light_color, 0.25);
+  border-left: 1px solid rgba($dark_color, 0.25);
+  text-decoration: none;
+  cursor: pointer;
+  color: $dark_color;
+  @include text-shadow(0 1px 0 $light_color);
+
+  background: transparent none;
+  background-repeat: no-repeat, repeat-x;
+  background-position: -$icon_size 0, 0 0;
+  @include background-image($icons, linear-gradient(
+    rgba($light_color, 0.5)  0,
+    rgba($light_color, 0.25) 5%,
+    rgba($light_color, 0)    45%,
+    rgba($dark_color,  0)    55%,
+    rgba($dark_color,  0.25) 95%,
+    rgba($dark_color,  0.5)  100%
+  ));
+
+  &.ui-inline { @include inline-block; }
+
+  &:hover {
+    border-top-color: rgba($dark_color, 0.35);
+    border-right-color: rgba($dark_color, 0.35);
+    border-bottom-color: rgba($light_color, 0.35);
+    border-left-color: rgba($dark_color, 0.35);
+  }
+  &:active {
+    @include background-image($icons, linear-gradient(
+      rgba($light_color,  0.35) 0,
+      rgba($dark_color,  0.25)  5%,
+      rgba($dark_color, 0.1)    50%,
+      rgba($dark_color, 0.1)    95%,
+      rgba($dark_color, 0.5)    100%
+    ));
+    border-top-color: rgba($dark_color, 0.5);
+    border-right-color: rgba($dark_color, 0.5);
+    border-bottom-color: rgba($light_color, 0.25);
+    border-left-color: rgba($dark_color, 0.5);
+    padding-top: 2px;
+    padding-bottom: 0;
+  }
+
+  &:focus {
+    outline: none;
+    @include box-shadow(
+      0 0 8px rgba($highlight_color, 0.75)
+    );
+  }
+
+  &.theme-a {
+    background-color: $theme_a;
+    color: $light_color;
+    @include text-shadow(0 1px 0 $dark_color);
+    &:hover { background-color: mix($theme_a, $light_color, 95%); }
+  }
+  &.theme-b {
+    background-color: $theme_b;
+    color: $light_color;
+    @include text-shadow(0 1px 0 $dark_color);
+    &:hover { background-color: mix($theme_b, $light_color, 95%); }
+  }
+  &.theme-c {
+    background-color: $theme_c;
+    &:hover { background-color: mix($theme_c, $light_color, 95%); }
+  }
+  &.theme-d {
+    background-color: $theme_d;
+    &:hover { background-color: mix($theme_d, $dark_color, 95%); }
+  }
+  &.theme-e {
+    background-color: $theme_e;
+    &:hover { background-color: mix($theme_e, $dark_color, 95%); }
+  }
+
+  &.ui-icon {
+    padding-left: 10px + $icon_size + 10px;
+    &.icon-right {
+      padding-left:  10px;
+      padding-right: 10px + $icon_size + 10px;
+    }
+  }
+
+  &.ui-icon-arrow-l { @include button-icon('arrow-l-light'); }
+  &.ui-icon-arrow-r { @include button-icon('arrow-r-light'); }
+
+  &.ui-icon-only {
+    @include hide-text;
+    width: 20px + $icon_size;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+  }
+}
+
+input.ui-button,
+button.ui-button {
+  height: $button_height;
+  width: 100%;
+  @include box-sizing(border-box);
+}
+
+.ui-control-group {
+  @include clearfix;
+  white-space: nowrap;
+
+  & > .ui-button {
+    &.highlight {
+      background-color: $highlight_color;
+      @include background-image($icons, linear-gradient(
+        rgba($light_color, 0.25),
+        rgba($dark_color,  0.25) 95%
+      ));
+      @include text-shadow(0 -1px 1px $dark_color);
+      color: $light_color;
+    }
+
+    input[type="radio"] {
+      visibility: hidden;
+      position: absolute;
+    }
+
+    label, label.inline {
+      display: block;
+      cursor: pointer;
+      padding: 0 10px;
+      margin: -2px -10px -2px -10px;
+      white-space: normal;
+    }
+  }
+
+  &.orientation-horizontal {
+    & > .ui-button,
+    & > li {
+      float: left;
+      @include box-sizing(border-box);
+      height: $button_height;
+    }
+
+    .ui-button {
+      @include border-radius(0);
+      border-left-width: 0;
+    }
+
+    & > .ui-button:first-child,
+    & >         li:first-child .ui-button {
+      @include border-radius(5px 0 0 5px);
+      border-left-width: 1px;
+    }
+
+    & > .ui-button:last-child,
+    & >         li:last-child .ui-button {
+      @include border-radius(0 5px 5px 0);
+    }
+
+    & > .ui-button:only-child,
+    & >         li:only-child .ui-button {
+      @include border-radius(5px);
+    }
+  }
+
+  &.orientation-vertical {
+    & > .ui-button,
+    & > li {
+      line-height: $font_size * 1.125;
+      text-align: left;
+      height: auto;
+    }
+
+    .ui-button {
+      @include border-radius(0);
+      border-top-width: 0;
+      border-bottom-width: 0;
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+      &:active {
+        padding-top: 11px;
+        padding-bottom: 9px;
+      }
+    }
+
+    & > .ui-button:first-child,
+    & >         li:first-child .ui-button {
+      @include border-radius(5px 5px 0 0);
+      border-top-width: 1px;
+    }
+
+    & > .ui-button:last-child,
+    & >         li:last-child .ui-button {
+      @include border-radius(0 0 5px 5px);
+      border-bottom-width: 1px;
+    }
+
+    & > .ui-button:only-child,
+    & >         li:only-child .ui-button {
+      @include border-radius(5px);
+    }
+  }
+}
+
+.ui-collapsible {
+  padding: 10px;
+
+  .ui-toggle {
+    display: block;
+    cursor: pointer;
+    @include border-radius(10px);
+    margin: -10px -11px 10px -11px !important;
+    padding: 10px 10px 10px 20px + $icon_size;
+    background: transparent none;
+    background-repeat: no-repeat, repeat-x;
+    background-position: -$icon_size 0, 0 0;
+    @include background-image($icons, linear-gradient(
+      rgba($dark_color, 0.1),
+      rgba($dark_color, 0.05)
+    ));
+    border-right: 1px solid rgba($dark_color, 0.25);
+    border-bottom: 1px solid rgba($dark_color, 0.25);
+    border-left: 1px solid rgba($dark_color, 0.25);
+    @include box-shadow(0 1px 2px rgba($dark_color, 0.05) inset);
+    @include button-icon('triangle-d-dark', 20px + $font_size * 1.125, 10px);
+
+    &:active {
+      padding-top: 11px;
+      padding-bottom: 9px;
+    }
+  }
+
+  @include themes(false, ' .ui-toggle');
+
+  &.closed {
+    * {
+      display: none !important;
+      visibility: none !important;
+    }
+
+    .ui-toggle {
+      display: block !important;
+      @include background-image($icons, linear-gradient(
+        rgba($dark_color, 0)    50%,
+        rgba($dark_color, 0.05) 100%
+      ));
+      @include box-shadow(0 -1px 2px rgba($dark_color, 0.05) inset);
+      margin-bottom: -10px !important;
+      border-bottom: none;
+      @include button-icon('triangle-r-dark', 20px + $font_size * 1.125, 10px);
+    }
+  }
+}
+
+.ui-footer {
+  background: transparent none repeat-x 0 0;
+  @include background-image(linear-gradient(
+    rgba($light_color, 0.25),
+    rgba($light_color, 0) 50%
+  ));
+  position: relative;
+  left: 0;
+  right: 0;
+  min-height: $footer_height - 1px;
+  border-top: 1px solid rgba($dark_color, 0.1);
+  z-index: 200;
+
+  &.ui-fixed {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  @include themes;
+
+  .ui-button {
+    margin-top: ($footer_height - $button_height) / 2;
+  }
+
+  .ui-sitemap {
+    padding: 10px;
+    text-align: center;
+
+    li {
+      display: inline;
+
+      &:after {
+        content: " | ";
+      }
+      &:last-child:after {
+        display: none;
+      }
+    }
+
+    a {
+      @include inline-block;
+      font-size: 80%;
+      text-decoration: none;
+      color: mix($dark_color, $light_color, 75%);
+
+      &:hover {
+        color: mix($dark_color, $light_color, 85%);
+        text-decoration: underline;
+      }
+    }
+  }
+}
