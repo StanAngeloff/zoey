@@ -17,11 +17,16 @@
             <p>Zoey is a mobile framework on top on <a href="http://zeptojs.com/" rel="external">zepto.js</a> that aims to be small and fast.
             <strong>The golder rule is</strong>: don't generate any extra markup and do everything through progressive enhancements and CSS.</p>
             <p><a href="#demo" data-role="button" data-icon="arrow-r" data-iconpos="right">Demo</a></p>
-            <p><a href="index2.html" data-role="button" data-icon="arrow-r" data-iconpos="right">Load Another Page</a></p>
+            <p><a href="index2.html" data-role="button" data-icon="arrow-r" data-iconpos="right">AJAX Navigation</a></p>
             <h2>Why?</h2>
-            <p>Size matters. At least when it comes to mobile downloads. Zoey tries to keep it simple and weights at only 10KB JavaScript + 30KB CSS.</p>
-            <p>For comparison, jQuery Mobile is 50KB JavaScript + 50KB CSS. This doesn't include the jQuery library which may or may not be available in the cache.</p>
-            <p>That's a few KBs off and a good improvement. To speed downloads even further, zepto.js is used instead of the full-blown desktop version of jQuery.</p>
+            <p>Size matters. At least when it comes to mobile downloads. Zoey tries to keep it simple and weights at only <strong>9KB</strong> JavaScript + <strong>24KB</strong> CSS (no GZip).</p>
+            <p>For comparison, jQuery Mobile is <strong>60KB</strong> JavaScript + <strong>41KB</strong> CSS. This doesn't include the jQuery library which may or may not be available in the cache.</p>
+            <p>That's a few KBs off and a good improvement. To speed downloads even further, zepto.js (<strong>12KB</strong>) is used instead of the full-blown desktop version of jQuery (<strong>80KB</strong>).</p>
+            <h3>How does it add up?</h3>
+            <ul>
+                <li>Zoey &mdash; <strong>45KB</strong>, GZip: ~11.5KB</li>
+                <li>jQuery Mobile &mdash; <strong>181KB</strong>, GZip: ~56KB</li>
+            </ul>
             <h2>Styling</h2>
             <p>You want your application to be unique. This is why Zoey uses <a href="http://beta.compass-style.org/" rel="external">Compass</a> to allow you to easily customise the default theme.</p>
             <p>By overriding predefined variables, you can produce a unique theme of your own. You can even go further and completely re-design the default one, it's entirely up to you.</p>
