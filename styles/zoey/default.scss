@@ -1,5 +1,13 @@
 @import 'compass';
 
+$experimental-support-for-mozilla:   false;
+$experimental-support-for-opera:     false;
+$experimental-support-for-microsoft: false;
+$experimental-support-for-khtml:     false;
+$legacy-support-for-ie6:             false;
+$legacy-support-for-ie7:             false;
+$legacy-support-for-ie8:             false;
+
 @include global-reset;
 
 $header_height:   32px;
@@ -303,117 +311,115 @@ body {
     text-align: center;
   }
 
-  .ui-body {
-    h2 {
-      font-size: 150%;
+  h2 {
+    font-size: 150%;
+    text-align: center;
+  }
+
+  h3 {
+    font-size: 140%;
+    text-align: center;
+  }
+
+  h4 { font-size: 130%; }
+  h5 { font-size: 120%; }
+  h5 { font-size: 110%; }
+
+  h2, h3, h4, h5, h6,
+  ul, ol,
+  p,
+  table,
+  form {
+    margin: 10px 0;
+  }
+
+  strong { font-weight: bold; }
+  em     { font-style: italic; }
+
+  table {
+    width: 100%;
+    border-spacing: 0;
+    border-top: 1px dotted rgba($dark_color, 0.25);
+
+    thead, th { font-weight: bold; }
+
+    th, td {
+      border-bottom: 1px dotted rgba($dark_color, 0.25);
+      padding: 5px;
+      vertical-align: top;
+    }
+
+    .odd td, .odd th {
+      background-color: rgba($dark_color, 0.05);
+    }
+
+    tfoot td {
       text-align: center;
+      font-size: 80%;
     }
+  }
 
-    h3 {
-      font-size: 140%;
-      text-align: center;
+  label {
+    $padding: ($label_height - $font_size * 1.125) / 2;
+    display: block;
+    padding-top: $padding;
+    padding-bottom: $padding;
+
+    &.inline {
+      display: inline;
+      padding-left: 5px;
     }
+  }
 
-    h4 { font-size: 130%; }
-    h5 { font-size: 120%; }
-    h5 { font-size: 110%; }
+  input[type="checkbox"],
+  input[type="radio"] {
+    vertical-align: middle;
+  }
 
-    h2, h3, h4, h5, h6,
-    ul, ol,
-    p,
-    table,
-    form {
-      margin: 10px 0;
-    }
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    @include font;
+    background-color: $light_color;
+    border: 1px solid rgba($dark_color, 0.5);
+    @include border-radius(5px);
+    color: $dark_color;
+    margin: 0;
+    height: $input_height;
+    padding: 2px 5px;
+    display: block;
+    width: 100%;
+    @include box-sizing(border-box);
+  }
 
-    strong { font-weight: bold; }
-    em     { font-style: italic; }
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea {
+    @include box-shadow(
+      0 1px 2px rgba($dark_color, 0.25) inset
+    );
+    -webkit-appearance: none;
 
-    table {
-      width: 100%;
-      border-spacing: 0;
-      border-top: 1px dotted rgba($dark_color, 0.25);
-
-      thead, th { font-weight: bold; }
-
-      th, td {
-        border-bottom: 1px dotted rgba($dark_color, 0.25);
-        padding: 5px;
-        vertical-align: top;
-      }
-
-      .odd td, .odd th {
-        background-color: rgba($dark_color, 0.05);
-      }
-
-      tfoot td {
-        text-align: center;
-        font-size: 80%;
-      }
-    }
-
-    label {
-      $padding: ($label_height - $font_size * 1.125) / 2;
-      display: block;
-      padding-top: $padding;
-      padding-bottom: $padding;
-
-      &.inline {
-        display: inline;
-        padding-left: 5px;
-      }
-    }
-
-    input[type="checkbox"],
-    input[type="radio"] {
-      vertical-align: middle;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    input[type="number"],
-    input[type="password"],
-    textarea,
-    select {
-      @include font;
-      background-color: $light_color;
-      border: 1px solid rgba($dark_color, 0.5);
-      @include border-radius(5px);
-      color: $dark_color;
-      margin: 0;
-      height: $input_height;
-      padding: 2px 5px;
-      display: block;
-      width: 100%;
-      @include box-sizing(border-box);
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    input[type="number"],
-    input[type="password"],
-    textarea {
+    &:focus {
+      outline: none;
       @include box-shadow(
-        0 1px 2px rgba($dark_color, 0.25) inset
+        0 1px 2px rgba($dark_color, 0.1) inset,
+        0 0   8px rgba($highlight_color, 0.75)
       );
-      -webkit-appearance: none;
-
-      &:focus {
-        outline: none;
-        @include box-shadow(
-          0 1px 2px rgba($dark_color, 0.1) inset,
-          0 0   8px rgba($highlight_color, 0.75)
-        );
-      }
     }
+  }
 
-    select {
-      &:focus {
-        outline: none;
-        @include box-shadow(0 0 8px rgba($highlight_color, 0.75));
-      }
+  select {
+    &:focus {
+      outline: none;
+      @include box-shadow(0 0 8px rgba($highlight_color, 0.75));
     }
   }
 }
