@@ -1,4 +1,5 @@
-/*!
+(function() {
+/**
  * The MIT License
  *
  * Copyright (c) 2011 Stan Angeloff
@@ -21,7 +22,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-(function() {
 var $first     = null,
     $visible   = null,
     $highlight = [],
