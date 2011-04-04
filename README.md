@@ -26,7 +26,7 @@ By overriding predefined variables, you can produce a unique theme of your own. 
 Platforms
 ---------
 
-Zoey has been tested on modern mobile browsers and works on Android 2.2+ and iOS 4.2+. Earlier versions might be supported as well, but haven't been tested.
+Zoey has been tested on modern mobile browsers and works on Android 2.1+ and iOS 4.2+. Earlier versions might be supported as well, but haven't been tested.
 
 The default theme makes use of CSS3 goodies: multiple backgrounds, gradients, box sizing, etc. Some of these may not be available in previous Android/iOS builds.
 

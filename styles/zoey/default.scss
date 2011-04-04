@@ -68,6 +68,10 @@ $icons: sprite-map('icons/*.png', $spacing: ($icon_size * 8));
   }
 }
 
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
 body {
   background: $theme_c;
   @include font;
