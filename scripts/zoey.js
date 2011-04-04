@@ -186,15 +186,6 @@ $.mobile.serialize = function serialize(form) {
   }
   return data;
 };
-$.fn.empty || ($.fn.empty = function empty() {
-  for (var i = 0; i < this.length; i ++) {
-    var element = this.get(i);
-    while (element.childNodes.length) {
-      element.removeChild(element.childNodes[0]);
-    }
-  }
-  return this;
-});
 $.fn.addTheme = function uiAddTheme(theme, inherit, propagate) {
   inherit   && (inherit   = this.parent('[data-theme]').data('theme'));
   propagate && (propagate = this.find('[data-role]:not([data-theme])'));
@@ -226,16 +217,9 @@ $.fn.reflow = function uiReflow() {
   this.find('[data-role="content"]').content();
   return this;
 };
-$.fn.markProcessed = function uiMarkProcessed() {
-  if (this.data('mobile:processed')) {
-    return true;
-  }
-  this.data('mobile:processed', true);
-  return false;
-};
 $.fn.none = function uiNone() {};
 $.fn.page = function uiPage() {
-  if (this.markProcessed()) {
+  if (this.hasClass('ui-page')) {
     return this;
   }
   this.addClass('ui-page');
