@@ -33,7 +33,19 @@ $theme_c: #ccc;
 $theme_e: #fd4;
 $theme_d: #fff;
 
+$dark_themes:  a, b;
+$light_themes: c, e, d;
+
 $icons: sprite-map('icons/*.png', $spacing: ($icon_size * 8));
+
+@function get_theme($theme) {
+  @if ($theme == a) { @return $theme_a; }
+  @if ($theme == b) { @return $theme_b; }
+  @if ($theme == c) { @return $theme_c; }
+  @if ($theme == d) { @return $theme_d; }
+  @if ($theme == e) { @return $theme_e; }
+  @return false;
+}
 
 @mixin themes($before: false, $after: false) {
   @if ($before == false) {
@@ -173,13 +185,14 @@ body {
 
   @include themes;
 
-  &.theme-e,
-  &.theme-d {
-    @include text-shadow(0 1px 0 $light_color);
+  @each $theme in $light_themes {
+    &.theme-#{$theme} {
+      @include text-shadow(0 1px 0 $light_color);
 
-    h1,   h2,
-    h1 a, h2 a {
-      color: $dark_color;
+      h1,   h2,
+      h1 a, h2 a {
+        color: $dark_color;
+      }
     }
   }
 
@@ -198,7 +211,6 @@ body {
 
 .ui-navbar {
   min-height: $nav_height;
-  @include text-shadow(0 1px 0 $dark_color);
   @include clearfix;
 
   li {
@@ -216,6 +228,7 @@ body {
       rgba($light_color, 0) 50%
     ));
     color: $light_color;
+    @include text-shadow(0 1px 0 $dark_color);
     text-decoration: none;
     line-height: $nav_height - 4px;
     border-top: 1px solid rgba($dark_color, 0.1);
@@ -235,8 +248,25 @@ body {
 
   @include themes(false, ' a');
 
-  li a:hover {
-    background-color: rgba($highlight_color, 0.25);
+  @each $theme in $light_themes {
+    &.theme-#{$theme} a {
+      @include text-shadow(0 1px 0 $light_color);
+      color: $dark_color;
+    }
+  }
+
+  @each $theme in $light_themes {
+    $background_color: get_theme($theme);
+    &.theme-#{$theme} li a:hover {
+      background-color: mix($background_color, $dark_color, 95%);
+    }
+  }
+
+  @each $theme in $dark_themes {
+    $background_color: get_theme($theme);
+    &.theme-#{$theme} li a:hover {
+      background-color: mix($background_color, $light_color, 95%);
+    }
   }
 
   li a:active {
@@ -293,9 +323,9 @@ body {
     font-size: 80%;
   }
 
-  &.ui-body-a,
-  &.ui-body-b { color: $light_color; }
-  &.ui-body-d { background-image: none; }
+  @each $theme in $dark_themes {
+    &.ui-body-#{$theme} { color: $light_color; }
+  }
 }
 
 .ui-content {
@@ -577,9 +607,18 @@ body {
   @include themes(false, ' li');
   li { @include themes; }
 
-  a {
-    color: $dark_color;
-    text-decoration: none;
+  @each $theme in $light_themes {
+    &.theme-#{$theme} a {
+      color: $dark_color;
+      text-decoration: none;
+    }
+  }
+
+  @each $theme in $dark_themes {
+    &.theme-#{$theme} a {
+      color: $light_color;
+      text-decoration: none;
+    }
   }
 
   .ui-li-count,
@@ -701,29 +740,22 @@ body {
     );
   }
 
-  &.theme-a {
-    background-color: $theme_a;
-    color: $light_color;
-    @include text-shadow(0 1px 0 $dark_color);
-    &:hover { background-color: mix($theme_a, $light_color, 95%); }
+  @each $theme in $light_themes {
+    $background_color: get_theme($theme);
+    &.theme-#{$theme} {
+      background-color: $background_color;
+      &:hover { background-color: mix($background_color, $light_color, 95%); }
+    }
   }
-  &.theme-b {
-    background-color: $theme_b;
-    color: $light_color;
-    @include text-shadow(0 1px 0 $dark_color);
-    &:hover { background-color: mix($theme_b, $light_color, 95%); }
-  }
-  &.theme-c {
-    background-color: $theme_c;
-    &:hover { background-color: mix($theme_c, $light_color, 95%); }
-  }
-  &.theme-d {
-    background-color: $theme_d;
-    &:hover { background-color: mix($theme_d, $dark_color, 95%); }
-  }
-  &.theme-e {
-    background-color: $theme_e;
-    &:hover { background-color: mix($theme_e, $dark_color, 95%); }
+
+  @each $theme in $dark_themes {
+    $background_color: get_theme($theme);
+    &.theme-#{$theme} {
+      background-color: $background_color;
+      color: $light_color;
+      @include text-shadow(0 1px 0 $dark_color);
+      &:hover { background-color: mix($background_color, $light_color, 95%); }
+    }
   }
 
   &.ui-icon {
