@@ -24,6 +24,7 @@
  */
 var VERSION = '0.2';
 var self = this;
+var $loading;
 var $topPage;
 var $visiblePage;
 var $hiddenPage;
@@ -37,6 +38,18 @@ function scrollTop(offset) {
     document.body.scrollTop = document.documentElement.scrollTop = window.pageYOffset = offset;
   } else {
     return (document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset);
+  }
+};
+self.loading = function(display) {
+  if (display) {
+    if ( ! $loading) {
+      $loading = $('<div>').addClass('ui-loading').append($('<div>').addClass('ui-spinner'));
+      $(document.body).append($loading);
+      $(window).trigger('resize');
+    }
+  } else {
+    $loading && $loading.remove();
+    $loading = null;
   }
 };
 self.showPage = function($page, options) {
@@ -63,6 +76,41 @@ self.showPage = function($page, options) {
   $page.get(0).focus();
   return self;
 };
+self.createPages = function(html, options) {
+  var $result = $('<div>').html(html);
+  var $pages = $result.find('[data-role="page"]');
+  var target = options.target;
+  var id;
+  $pages.length || ($pages = $('<div>'));
+  if ($cachedPages[target]) {
+    $cachedPages[target].remove();
+    delete $cachedPages[target];
+  }
+  for (var i = 0, length = $pages.length, $page; $page = $($pages.get(i)), i < length; i ++) {
+    id = $page.attr('id');
+    if ( ! id || $('#' + id).length) {
+      $page.attr({ id: 'page-' + (++ pageSequence) });
+    }
+    self.role.call($page, 'page');
+    if ($page.data('cache') === 'true') {
+      $cachedPages[target] = $page;
+    } else {
+      (function($this) {
+        $this.bind('pagehide', function() {
+          $this.remove();
+        });
+      })($page);
+    }
+    self.initialize($page, options);
+    $(document.body).append($page);
+  }
+  self.loading(false);
+  self.changePage($.extend(options, { target: $pages.first() }));
+  if (options.type !== 'dialog') {
+    pageHash = target;
+    location.hash = pageHash;
+  }
+};
 self.changePage = function(options) {
   var $page;
   options || (options = {});
@@ -75,6 +123,24 @@ self.changePage = function(options) {
       }
     });
     if ( ! $page) {
+      if ($cachedPages[options.target] && options.method !== 'POST') {
+        self.changePage($.extend(options, { target: $cachedPages[options.target] }));
+      } else {
+        self.loading(true);
+        $.ajax({
+          dataType: 'html',
+          data:     options.data,
+          type:     (options.method && options.method.toUpperCase()) || 'GET',
+          url:      options.target,
+          success:  function(html, code, xhr) {
+            self.createPages(html, options);
+          },
+          error: function(xhr, code, exception) {
+            self.loading(false);
+            alert('Whoops! We failed to load the requested page from the server. Please make sure you are connected to the internet and try again.\n\n[' + xhr.status + '] ' + (exception || xhr.statusText));
+          }
+        });
+      }
     }
   } else {
     $page = options.target;
@@ -89,6 +155,34 @@ self.changePage = function(options) {
 self.widgets = {
   page: function() {
     this.delegate('a', 'click', function(event) {
+      var $this = $(this);
+      if ($this.data('ajax') === 'false' || $this.attr('rel') === 'external') {
+        return true;
+      }
+      if ($this.hasClass('ui-disabled')) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
+      var href = $this.attr('href');
+      if (href.indexOf('mailto:') === 0 || href.indexOf('sms:') === 0) {
+        return true;
+      }
+      var type = $this.data('rel');
+      if (type === 'back') {
+        if ($hiddenPage) {
+          self.closeDialog();
+        } else {
+          history.back();
+        }
+        event.preventDefault();
+      } else {
+        self.changePage({
+          event:  event,
+          target: href,
+          type:   type
+        });
+      }
     }).delegate('form', 'submit', function(event) {
     });
     $topPage || ($topPage = this);
@@ -162,7 +256,15 @@ self.initialize = function(scope, options) {
           target: pageHash || $topPage
         });
       }
-    }).trigger('hashchange');
+    }).trigger('hashchange').bind('resize scroll orientationchange', function() {
+      $loading && $loading.css({
+        width:  window.innerWidth + 'px',
+        height: document.body.scrollHeight + 'px'
+      }).children().css({
+        top:  (scrollTop() + Math.round(window.innerHeight / 2)) + 'px',
+        left: Math.round(window.innerWidth  / 2) + 'px'
+      });
+    });
     if ( ! window.onhashchange) {
       var last = location.hash;
       setInterval(function() {

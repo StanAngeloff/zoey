@@ -89,6 +89,13 @@ html {
   visibility: hidden !important;
 }
 
+.ui-disabled,
+.ui-disabled:hover,
+.ui-disabled:active {
+  @include opacity(0.5 !important);
+  @include text-shadow(none !important);
+}
+
 .ui-inline {
   @include inline-block;
   vertical-align: top;
@@ -102,9 +109,51 @@ html {
   .ui-size-#{letter($index)} { width: (100% / $index); }
 }
 
+@-webkit-keyframes uiDelayedFadeIn {
+  0%   { @include opacity(0.01); }
+  50%  { @include opacity(0.01); }
+  100% { @include opacity(1); }
+}
+
+@-webkit-keyframes uiSpin {
+  0%   { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+.ui-loading {
+  cursor: wait;
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  background-color: rgba(#000, 0.5);
+  -webkit-animation-name: uiDelayedFadeIn;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+
+  .ui-spinner {
+    $image: 'background-loading.png';
+    $size: image-width($image);
+    background: transparent image-url($image) no-repeat 0 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -$size / 2;
+    margin-top: -$size / 2;
+    width: $size;
+    height: $size;
+    -webkit-animation-name: uiSpin;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }
+}
+
 // WIDGETS -------------------------------------------------------------------
 
 .ui-header {
+  @include clearfix;
   background: transparent none repeat-x 0 0;
   @include background-image(linear-gradient(
     rgba(#fff, opacity-level(25))   0%,
