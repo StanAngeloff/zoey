@@ -96,27 +96,23 @@
         <div class="ui-body ui-theme-d">
             <h2>Forms</h2>
             <ol>
-                <li class="ui-fieldcontain">
-                    <label for="name">E-mail:</label>
-                    <input type="email" id="name">
+                <li class="ui-field">
+                    <label>E-mail:
+                        <input type="email" id="name">
+                    </label>
                 </li>
-                <li class="ui-fieldcontain">
-                    <label for="name">Country:</label>
-                    <select>
-                        <option>United Kingdom</option>
-                        <option>United States</option>
-                    </select>
+                <li class="ui-field">
+                    <label>Country:
+                        <select>
+                            <option>United Kingdom</option>
+                            <option>United States</option>
+                        </select>
+                    </label>
                 </li>
-                <li class="ui-fieldcontain">
+                <li class="ui-field">
                     <ul data-role="group">
-                        <li data-role="button">
-                            <input type="radio" id="male" name="gender" value="m" checked>
-                            <label for="male">Male</label>
-                        </li>
-                        <li data-role="button">
-                            <input type="radio" id="female" name="gender" value="f">
-                            <label for="female">Female</label>
-                        </li>
+                        <li><label data-role="button"><input type="radio" name="gender" value="m" checked> Male</label></li>
+                        <li><label data-role="button"><input type="radio" id="female" name="gender" value="f"> Female</label></li>
                     </ul>
                 </li>
             </ol>
