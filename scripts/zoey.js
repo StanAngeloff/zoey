@@ -69,8 +69,10 @@ self.showPage = function($page, options) {
   $highlight.length && $highlight.removeClass('ui-highlight');
   $highlight = $page.find('[href="#' + id + '"]').addClass('ui-highlight');
   $visiblePage = $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
+  // DISABLED: $visiblePage.reflow();
   setTimeout(function() {
     scrollTop($visiblePage.data('zoey:scroll-top') || 0);
+    // DISABLED: self.updateLayout();
   }, 125);
   options.event && options.event.stopPropagation();
   $page.get(0).focus();
@@ -152,6 +154,36 @@ self.changePage = function(options) {
   }
   return self;
 };
+self.closeDialog = function() {
+  self.changePage({
+    target: $hiddenPage
+  });
+}
+self.serialize = function(form) {
+  var data = {};
+  var normalize = function(element) { return (element.value || '').replace(/\r\n|\r|\n/g, '\n'); };
+  for (var i = 0, element; element = form.elements[i], i < form.elements.length; i ++) {
+    if (element.name && ! element.disabled) {
+      if (element.tagName === 'SELECT') {
+        data[element.name] = element.options[element.selectedIndex].value;
+      } else if (element.tagName === 'INPUT') {
+        if (element.type === 'checkbox' || element.type === 'radio') {
+          if (element.checked) {
+            data[element.name] = (element.value || 'on');
+          }
+        } else {
+          data[element.name] = normalize(element);
+        }
+      } else if (element.tagName === 'TEXTAREA') {
+        data[element.name] = normalize(element);
+      }
+    }
+  }
+  return data;
+};
+// DISABLED: $.fn.reflow = function() {
+// DISABLED:   this.find('[data-role="content"]').content();
+// DISABLED: };
 self.widgets = {
   page: function() {
     this.delegate('a', 'click', function(event) {
@@ -184,19 +216,89 @@ self.widgets = {
         });
       }
     }).delegate('form', 'submit', function(event) {
+      var $this = $(this);
+      if ($this.data('ajax') === 'false') {
+        return true;
+      }
+      var type = $this.data('rel');
+      self.changePage({
+        event:  event,
+        target: $this.attr('action'),
+        method: $this.attr('method'),
+        data:   self.serialize(this),
+        type:   type
+      });
     });
     $topPage || ($topPage = this);
     this.addClass('ui-collapsed');
+  },
+  header: function() {
+    // DISABLED: if (this.data('position') === 'fixed') {
+    // DISABLED:   this.addClass('ui-fixed');
+    // DISABLED:   $fixedWidgets.push([this, this.parent('[data-role="page"]'), 'top']);
+    // DISABLED: }
   },
   navigation: function() {
     var $children = this.children();
     $children.addClass('ui-size-' + String.fromCharCode(97 /* 'a' */ + $children.length - 1));
   },
   content: function() {
+    // DISABLED: var top = 0, bottom = 0;
+    // DISABLED: this.prev('[data-role="header"]').each(function() {
+    // DISABLED:   var $this = $(this);
+    // DISABLED:   if ($this.css('position') === 'absolute') {
+    // DISABLED:     top = top + $this.height();
+    // DISABLED:   }
+    // DISABLED: });
+    // DISABLED: this.next('[data-role="footer"]').each(function() {
+    // DISABLED:   var $this = $(this);
+    // DISABLED:   if ($this.css('position') === 'absolute') {
+    // DISABLED:     bottom = bottom + $this.height();
+    // DISABLED:   }
+    // DISABLED: });
+    // DISABLED: this.css({
+    // DISABLED:   'padding-top':    top    + 'px',
+    // DISABLED:   'padding-bottom': bottom + 'px'
+    // DISABLED: });
   },
   list: function() {
+    // DISABLED: var buttons = this.find('[data-role="button"]'),
+    // DISABLED:     split   = this.data('split-icon'),
+    // DISABLED:     icon    = this.data('icon');
+    // DISABLED: this.addClass('ui-list-view').addClass('align-' + (this.data('iconpos') || 'right')).addTheme('d', true, false);
+    // DISABLED: if (this.data('inset') === 'true') {
+    // DISABLED:   this.addClass('ui-inset');
+    // DISABLED: }
+    // DISABLED: buttons.addTheme('d', false, false);
+    // DISABLED: if (split) {
+    // DISABLED:   buttons.addIcon(split);
+    // DISABLED: }
+    // DISABLED: this.find('li').each(function() {
+    // DISABLED:   var $this = $(this), children = $this.children();
+    // DISABLED:   $this.addIcon(icon);
+    // DISABLED:   if (children.length && children[0].tagName === 'A') {
+    // DISABLED:     $(children[0]).addClass('ui-a-block');
+    // DISABLED:     $this.addClass('ui-li-block');
+    // DISABLED:   }
+    // DISABLED: });
   },
   group: function() {
+    // DISABLED: var $children, type = this.data('type');
+    // DISABLED: this.addClass('ui-control-group').addClass('orientation-' + (type || 'horizontal')).addTheme('d', true, true);
+    // DISABLED: if (type !== 'vertical') {
+    // DISABLED:   $children = this.children();
+    // DISABLED:   $children.css({ width: (100 / $children.length) + '%' });
+    // DISABLED: }
+    // DISABLED: $children = this.find('input');
+    // DISABLED: if ($children.length) {
+    // DISABLED:   var self = this;
+    // DISABLED:   this.delegate('input', 'change', function() {
+    // DISABLED:     $children.each(function() {
+    // DISABLED:       $(this).closest('[data-role="button"]')[this.checked ? 'addClass' : 'removeClass']('highlight');
+    // DISABLED:     });
+    // DISABLED:   });
+    // DISABLED:   $children.first().trigger('change');
+    // DISABLED: }
   },
   collapsible: function() {
     var $this = this;
@@ -214,6 +316,12 @@ self.widgets = {
     });
   },
   footer: function() {
+    // DISABLED: if (this.data('position') === 'fixed') {
+    // DISABLED:   this.addClass('ui-fixed').css({ top: (window.innerHeight - this.height()) + 'px' });
+    // DISABLED:   $fixedWidgets.push([this, this.parent('[data-role="page"]'), 'bottom']);
+    // DISABLED: } else {
+    // DISABLED:   $fixedWidgets.push([this, this.parent('[data-role="page"]'), 'bottom-if-needed']);
+    // DISABLED: }
   }
 };
 self.role = function(role) {
@@ -257,6 +365,29 @@ self.initialize = function(scope, options) {
         });
       }
     }).trigger('hashchange').bind('resize scroll orientationchange', function() {
+      // DISABLED: var top = scrollTop(), reflow = false;
+      // DISABLED: for (var i = 0; i < $fixedWidgets.length; i ++) {
+      // DISABLED:   var config = $fixedWidgets[i];
+      // DISABLED:   if (config[1].hasClass('ui-collapsed')) {
+      // DISABLED:     continue;
+      // DISABLED:   }
+      // DISABLED:   if (config[2] === 'top') {
+      // DISABLED:     config[0].css({ top: top + 'px' });
+      // DISABLED:   } else if (config[2] === 'bottom-if-needed') {
+      // DISABLED:     if (document.body.scrollHeight - 5 <= window.innerHeight) {
+      // DISABLED:       config[0].css({ position: 'absolute', bottom: '0px' });
+      // DISABLED:     } else {
+      // DISABLED:       config[0].css({ position: 'relative', bottom: 'auto' });
+      // DISABLED:     }
+      // DISABLED:     reflow = true;
+      // DISABLED:   } else {
+      // DISABLED:     config[0].css({ top: (top + window.innerHeight - config[0].height()) + 'px' });
+      // DISABLED:   }
+      // DISABLED: }
+      // DISABLED: hidden = false;
+      // DISABLED: if (reflow) {
+      // DISABLED:   $visiblePage.reflow();
+      // DISABLED: }
       $loading && $loading.css({
         width:  window.innerWidth + 'px',
         height: document.body.scrollHeight + 'px'
@@ -265,6 +396,32 @@ self.initialize = function(scope, options) {
         left: Math.round(window.innerWidth  / 2) + 'px'
       });
     });
+    // DISABLED: var hidden = false;
+    // DISABLED: $(window).bind('touchmove', function(event) {
+    // DISABLED:   if ( ! hidden) {
+    // DISABLED:     hidden = true;
+    // DISABLED:     for (var i = 0; i < $fixedWidgets.length; i ++) {
+    // DISABLED:       var config = $fixedWidgets[i];
+    // DISABLED:       if (config[1].hasClass('ui-collapsed')) {
+    // DISABLED:         continue;
+    // DISABLED:       }
+    // DISABLED:       if (config[2] === 'top') {
+    // DISABLED:         config[0].css({ top: '0px' });
+    // DISABLED:       } else if (config[2] === 'bottom-if-needed') {
+    // DISABLED:         if (document.body.scrollHeight > window.innerHeight) {
+    // DISABLED:           config[0].css({ position: 'relative', bottom: 'auto' });
+    // DISABLED:         }
+    // DISABLED:       } else {
+    // DISABLED:         config[0].css({ top: (document.body.scrollHeight - config[0].height()) + 'px' });
+    // DISABLED:       }
+    // DISABLED:     }
+    // DISABLED:   }
+    // DISABLED: });
+    // DISABLED: $(window).bind('touchend', function() {
+    // DISABLED:   if (hidden) {
+    // DISABLED:     self.updateLayout();
+    // DISABLED:   }
+    // DISABLED: });
     if ( ! window.onhashchange) {
       var last = location.hash;
       setInterval(function() {
