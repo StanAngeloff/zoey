@@ -22,6 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+var VERSION = '0.2';
+/* TODO:
 var $first     = null,
     $visible   = null,
     $highlight = [],
@@ -488,4 +490,5 @@ $(document).ready(function() {
     $.mobile.initialize();
   }
 });
-})();
+*/
+}).call($.mobile = {});
