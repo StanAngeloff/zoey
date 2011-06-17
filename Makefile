@@ -28,3 +28,10 @@ build:
 	@@uglifyjs -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' scripts/zoey.js
 	@@cat '$(VENDOR_PATH)/zepto-$(ZEPTO_VERSION).js' scripts/zoey.js | uglifyjs -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).bundle.min.js'
 	@@echo 'Done. Zoey $(ZOEY_VERSION) built in $(RELEASE_PATH)/'
+
+benchmark:
+	@@echo "BEFORE: `du -b release/zoey-0.2.min.js | cut -f1`"
+	@@uglifyjs -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' scripts/zoey.js
+	@@echo "AFTER:  `du -b release/zoey-0.2.min.js | cut -f1`"
+
+.PHONY: build
