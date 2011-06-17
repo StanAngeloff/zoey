@@ -3,29 +3,31 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
-    <link rel="stylesheet" href="styles/zoey/default.css">
+    <link rel="stylesheet" href="styles/zoey.css">
 </head>
 <body>
 
 <article id="demo" data-role="page">
-    <header data-role="header">
+    <header data-role="header" data-theme="b">
         <a href="#home" data-role="button" data-rel="back" data-icon="arrow-l" data-theme="b">Back</a>
-        <h1>Zoey, a mobile framework</h1>
+        <h1 data-role="page-title">Zoey, mobile UI framework</h1>
     </header>
     <div data-role="content">
-        <div class="ui-body ui-body-d">
+        <div class="ui-body ui-theme-d">
             <h2>Another Page</h2>
             <p>This page was loaded with AJAX.</p>
             <p>That's it.</p>
         </div>
+    </div>
     <footer data-role="footer">
-        <ul class="ui-sitemap">
-            <li><a href="https://github.com/StanAngeloff/zoey" rel="external">Github page</a></li>
+        <ul data-role="navigation">
+            <li><a href="https://github.com/StanAngeloff/zoey" data-role="button" rel="external">Github page</a></li>
         </ul>
     </footer>
 </article>
 
-<script src="scripts/zoey.bundle.js"></script>
+<script src="scripts/vendor/zepto-0.6.js"></script>
+<script src="scripts/zoey.js"></script>
 
 </body>
 </html>

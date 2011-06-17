@@ -3,21 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
-    <link rel="stylesheet" href="styles/zoey/default.css">
+    <link rel="stylesheet" href="styles/zoey.css">
 </head>
 <body>
 
 <article id="home" data-role="page">
-    <header data-role="header">
-        <h1>Zoey, a mobile framework</h1>
+    <header data-role="header" data-theme="b">
+        <h1 data-role="page-title">Zoey, mobile UI framework</h1>
     </header>
     <div data-role="content">
-        <div class="ui-body ui-body-d">
+        <div class="ui-body ui-theme-d">
             <h2>What is Zoey?</h2>
             <p>Zoey is a mobile framework on top on <a href="http://zeptojs.com/" rel="external">zepto.js</a> that aims to be small and fast.
             <strong>The golder rule is</strong>: don't generate any extra markup and do everything through progressive enhancements and CSS.</p>
-            <p><a href="#demo" data-role="button" data-icon="arrow-r" data-iconpos="right">Demo</a></p>
-            <p><a href="index2.html" data-role="button" data-icon="arrow-r" data-iconpos="right">AJAX Navigation</a></p>
+            <p><a href="#demo" data-role="button" data-icon="arrow-r" class="ui-icon-position-right">Demo</a></p>
+            <p><a href="index2.html" data-role="button" data-icon="arrow-r" class="ui-icon-position-right">AJAX Navigation</a></p>
             <h2>Why?</h2>
             <p>Size matters. At least when it comes to mobile downloads. Zoey tries to keep it simple and weights at only <strong>9KB</strong> JavaScript + <strong>24KB</strong> CSS (no GZip).</p>
             <p>For comparison, jQuery Mobile is <strong>60KB</strong> JavaScript + <strong>41KB</strong> CSS. This doesn't include the jQuery library which may or may not be available in the cache.</p>
@@ -37,31 +37,38 @@
             <p>Since this is an early release, documentation has not been finalised yet. You can refer to <a href="http://jquerymobile.com/test/docs/" rel="external">jQuery Mobile</a>'s documentation as it has been the primary source of inspiration for this project.</p>
             <p>Poke around the <a href="https://github.com/StanAngeloff/zoey/blob/gh-pages/scripts/zoey.js" rel="external">source code</a> as well to find out what's supported.</p>
         </div>
-        <div class="ui-body ui-body-e">
+        <div class="ui-body ui-theme-e">
             <h2>Contribute</h2>
             <p>Zoey is very much a work in progress (hence no official release yet).</p>
             <p>You can help in a lot of ways: adding documentation, writing tests, performing code reviews, testing on different OSes and versions, opening issues, creating new themes and anything you reckon will benefit the project in general.</p>
         </div>
     </div>
     <footer data-role="footer">
-        <ul class="ui-sitemap">
-            <li><a href="https://github.com/StanAngeloff/zoey" rel="external">Github page</a></li>
+        <ul data-role="navigation">
+            <li><a href="https://github.com/StanAngeloff/zoey" data-role="button" rel="external">Github page</a></li>
         </ul>
     </footer>
 </article>
 
 <article id="demo" data-role="page">
-    <header data-role="header">
-        <a href="#home" data-role="button" data-rel="back" data-icon="arrow-l" data-theme="b">Back</a>
-        <h1>Zoey, a mobile framework</h1>
-        <ul data-role="navbar">
-            <li><a href="#home" data-rel="back">Home</a></li>
-            <li><a href="#home" data-rel="back">News</a></li>
-            <li><a href="#home" data-rel="back">Account</a></li>
+    <header data-role="header" data-theme="b">
+        <a href="#home" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
+        <h1 data-role="page-title">Zoey, mobile UI framework</h1>
+        <ul data-role="navigation">
+            <li><a href="#home" data-role="button" data-rel="back">Home</a></li>
+            <li><a href="#home" data-role="button" data-rel="back">News</a></li>
+            <li><a href="#home" data-role="button" data-rel="back">Account</a></li>
         </ul>
     </header>
     <div data-role="content">
-        <div class="ui-body ui-body-d">
+        <div class="ui-body ui-theme-d">
+            <h2>Navigation</h2>
+            <ul data-role="navigation">
+                <li><a href="#home" data-role="button" data-rel="back">REMOVE</a></li>
+                <li><a href="#home" data-role="button" data-rel="back">ME</a></li>
+            </ul>
+        </div>
+        <div class="ui-body ui-theme-d">
             <h2>Buttons</h2>
             <p><a href="#home" data-role="button" data-theme="a" data-rel="back">Swatch A</a></p>
             <p><a href="#home" data-role="button" data-theme="b" data-rel="back">Swatch B</a></p>
@@ -69,30 +76,30 @@
             <p><a href="#home" data-role="button" data-theme="d" data-rel="back">Swatch D</a></p>
             <p><a href="#home" data-role="button" data-theme="e" data-rel="back">Swatch E</a></p>
         </div>
-        <div class="ui-body ui-body-d">
+        <div class="ui-body ui-theme-d">
             <h2>Lists</h2>
-            <ul data-role="listview" data-inset="true">
+            <ul data-role="list" data-inset="true">
                 <li data-icon="arrow-l"><a href="#home" data-rel="back">Github</a></li>
                 <li data-icon="arrow-l"><a href="#home" data-rel="back">Twitter</a></li>
                 <li data-icon="arrow-l"><a href="#home" data-rel="back">Gmail</a></li>
                 <li data-icon="arrow-l"><a href="#home" data-rel="back">YouTube</a></li>
             </ul>
         </div>
-        <div class="ui-body ui-body-d">
+        <div class="ui-body ui-theme-d">
             <h2>Control Groups</h2>
-            <ul data-role="controlgroup">
-                <li><a href="#home" data-role="button" data-theme="b" data-rel="back">Send Message</a></li>
+            <ul data-role="group">
+                <li><a href="#home" data-role="button" data-rel="back">Send Message</a></li>
                 <li><a href="#home" data-role="button" data-rel="back">Skip</a></li>
             </ul>
         </div>
-        <div class="ui-body ui-body-d">
+        <div class="ui-body ui-theme-d">
             <h2>Collapsible</h2>
-            <div class="ui-body ui-body-c" data-role="collapsible" data-collapsed="true">
-                <h2>Toggle me</h2>
+            <div class="ui-body ui-theme-a" data-role="collapsible" data-collapsed="true">
+                <h3 class="ui-theme-c">Toggle me</h3>
                 <p>I am visible.</p>
             </div>
         </div>
-        <div class="ui-body ui-body-d">
+        <div class="ui-body ui-theme-d">
             <h2>Forms</h2>
             <ol>
                 <li class="ui-fieldcontain">
@@ -107,7 +114,7 @@
                     </select>
                 </li>
                 <li class="ui-fieldcontain">
-                    <ul data-role="controlgroup">
+                    <ul data-role="group">
                         <li data-role="button">
                             <input type="radio" id="male" name="gender" value="m" checked>
                             <label for="male">Male</label>
@@ -120,15 +127,38 @@
                 </li>
             </ol>
         </div>
+        <div class="ui-body ui-theme-d">
+            <h2>Grids</h2>
+            <div class="ui-grid ui-size-a">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-cell ui-size-b">left</div>
+                    <div class="ui-grid-cell ui-size-b">right</div>
+                </div>
+            </div>
+            <hr />
+            <div class="ui-grid">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-cell ui-size-c">top-left</div>
+                    <div class="ui-grid-cell ui-size-c">top-centre</div>
+                    <div class="ui-grid-cell ui-size-c">top-right</div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-cell ui-size-c">bottom-left</div>
+                    <div class="ui-grid-cell ui-size-c">bottom-centre</div>
+                    <div class="ui-grid-cell ui-size-c">bottom-right</div>
+                </div>
+            </div>
+        </div>
     </div>
     <footer data-role="footer">
-        <ul class="ui-sitemap">
-            <li><a href="https://github.com/StanAngeloff/zoey" rel="external">Github page</a></li>
+        <ul data-role="navigation">
+            <li><a href="https://github.com/StanAngeloff/zoey" data-role="button" rel="external">Github page</a></li>
         </ul>
     </footer>
 </article>
 
-<script src="scripts/zoey.bundle.js"></script>
+<script src="scripts/vendor/zepto-0.6.js"></script>
+<script src="scripts/zoey.js"></script>
 
 </body>
 </html>
