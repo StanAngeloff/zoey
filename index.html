@@ -16,8 +16,8 @@
             <h2>What is Zoey?</h2>
             <p>Zoey is a mobile framework on top on <a href="http://zeptojs.com/" rel="external">zepto.js</a> that aims to be small and fast.
             <strong>The golder rule is</strong>: don't generate any extra markup and do everything through progressive enhancements and CSS.</p>
-            <p><a href="#demo" data-role="button" data-icon="arrow-r" class="ui-icon-position-right">Demo</a></p>
-            <p><a href="index2.html" data-role="button" data-icon="arrow-r" class="ui-icon-position-right">AJAX Navigation</a></p>
+            <p><a href="#demo" data-role="button" data-icon="arrow-r" class="ui-icon-position-right">Widgets Demo</a></p>
+            <p><a href="index2.html" data-role="button" data-icon="arrow-r" class="ui-icon-position-right">External Document</a></p>
             <h2>Why?</h2>
             <p>Size matters. At least when it comes to mobile downloads. Zoey tries to keep it simple and weights at only <strong>9KB</strong> JavaScript + <strong>24KB</strong> CSS (no GZip).</p>
             <p>For comparison, jQuery Mobile is <strong>60KB</strong> JavaScript + <strong>41KB</strong> CSS. This doesn't include the jQuery library which may or may not be available in the cache.</p>
@@ -55,19 +55,12 @@
         <a href="#home" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
         <h1 data-role="page-title">Zoey, mobile UI framework</h1>
         <ul data-role="navigation">
-            <li><a href="#home" data-role="button" data-rel="back">Home</a></li>
-            <li><a href="#home" data-role="button" data-rel="back">News</a></li>
-            <li><a href="#home" data-role="button" data-rel="back">Account</a></li>
+            <li><a href="#demo" data-role="button">Widgets</a></li>
+            <li><a href="#home" data-role="button" data-rel="back">Navigation</a></li>
+            <li><a href="#home" data-role="button" data-rel="back">Example</a></li>
         </ul>
     </header>
     <div data-role="content">
-        <div class="ui-body ui-theme-d">
-            <h2>Navigation</h2>
-            <ul data-role="navigation">
-                <li><a href="#home" data-role="button" data-rel="back">REMOVE</a></li>
-                <li><a href="#home" data-role="button" data-rel="back">ME</a></li>
-            </ul>
-        </div>
         <div class="ui-body ui-theme-d">
             <h2>Buttons</h2>
             <p><a href="#home" data-role="button" data-theme="a" data-rel="back">Swatch A</a></p>
@@ -94,9 +87,10 @@
         </div>
         <div class="ui-body ui-theme-d">
             <h2>Collapsible</h2>
-            <div class="ui-body ui-theme-a" data-role="collapsible" data-collapsed="true">
-                <h3 class="ui-theme-c">Toggle me</h3>
-                <p>I am visible.</p>
+            <div class="ui-body" data-role="collapsible" data-collapsed="true">
+                <h3 class="ui-theme-c">Toggle Lipsum</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis libero augue, in auctor purus.</p>
+                <p>Donec eget tempor lectus. Aenean at velit risus, sed hendrerit velit. Ut nec arcu quam, sit amet tempus tortor. Duis elit libero, congue ac semper placerat, accumsan a nisl.</p>
             </div>
         </div>
         <div class="ui-body ui-theme-d">
