@@ -12,7 +12,7 @@
         <h1 data-role="page-title">Zoey, mobile UI framework</h1>
     </header>
     <div data-role="content">
-        <div class="ui-body ui-theme-d">
+        <div data-role="panel" class="ui-theme-d">
             <h2>What is Zoey?</h2>
             <p>Zoey is a mobile framework on top on <a href="http://zeptojs.com/" rel="external">zepto.js</a> that aims to be small and fast. <strong>The golder rule is</strong>: don't generate any extra markup. Do everything through progressive enhancements and CSS3.</p>
             <p><a href="#demo" data-role="button" data-icon="arrow-r" class="ui-icon-position-right">Widgets Demo</a></p>
@@ -30,7 +30,7 @@
             <p>Since this is an early release, documentation has not been finalised yet.</p>
             <p>Poke around the <a href="https://github.com/StanAngeloff/zoey/blob/gh-pages/scripts/zoey.js" rel="external">source code</a> as well to find out what's supported.</p>
         </div>
-        <div class="ui-body ui-theme-e">
+        <div data-role="panel" class="ui-theme-e">
             <h2>Contribute</h2>
             <p>Zoey is very much a work in progress (hence no official release yet).</p>
             <p>You can help in a lot of ways: adding documentation, writing tests, performing code reviews, testing on different OSes and versions, opening issues, creating new themes and anything you reckon will benefit the project in general.</p>
@@ -54,7 +54,7 @@
         </ul>
     </header>
     <div data-role="content">
-        <div class="ui-body ui-theme-d">
+        <div data-role="panel" class="ui-theme-d">
             <h2>Buttons</h2>
             <p><a href="#home" data-role="button" data-theme="a" data-rel="back">Theme Option A</a></p>
             <p><a href="#home" data-role="button" data-theme="b" data-rel="back">Theme Option B</a></p>
@@ -62,7 +62,7 @@
             <p><a href="#home" data-role="button" data-theme="d" data-rel="back">Theme Option D</a></p>
             <p><a href="#home" data-role="button" data-theme="e" data-rel="back">Theme Option E</a></p>
         </div>
-        <div class="ui-body ui-theme-d">
+        <div data-role="panel" class="ui-theme-d">
             <h2>Lists</h2>
             <ul data-role="list" data-inset="true">
                 <li data-icon="arrow-l"><a href="#home" data-rel="back">This is a sample list</a></li>
@@ -71,7 +71,7 @@
                 <li data-icon="arrow-l"><a href="#home" data-rel="back">homepage</a></li>
             </ul>
         </div>
-        <div class="ui-body ui-theme-d">
+        <div data-role="panel" class="ui-theme-d">
             <h2>Control Groups</h2>
             <p data-role="group" data-theme="e">
                 <a href="#home" data-role="button" data-icon="arrow-l" data-rel="back">Horizontal</a>
@@ -83,15 +83,17 @@
                 <a href="#home" data-role="button" data-rel="back">Orientation</a>
             </p>
         </div>
-        <div class="ui-body ui-theme-d">
+        <div data-role="panel" class="ui-theme-d">
             <h2>Collapsible</h2>
-            <div class="ui-body" data-role="collapsible" data-collapsed="true">
+            <div data-role="collapsible" data-collapsed="true">
                 <h3 class="ui-theme-c">Toggle Lipsum</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis libero augue, in auctor purus.</p>
-                <p>Donec eget tempor lectus. Aenean at velit risus, sed hendrerit velit. Ut nec arcu quam, sit amet tempus tortor. Duis elit libero, congue ac semper placerat, accumsan a nisl.</p>
+                <div class="ui-panel">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis libero augue, in auctor purus.</p>
+                    <p>Donec eget tempor lectus. Aenean at velit risus, sed hendrerit velit. Ut nec arcu quam, sit amet tempus tortor. Duis elit libero, congue ac semper placerat, accumsan a nisl.</p>
+                </div>
             </div>
         </div>
-        <div class="ui-body ui-theme-d">
+        <div data-role="panel" class="ui-theme-d">
             <h2>Forms</h2>
             <ol>
                 <li class="ui-field">
@@ -115,7 +117,7 @@
                 </li>
             </ol>
         </div>
-        <div class="ui-body ui-theme-d">
+        <div data-role="panel" class="ui-theme-d">
             <h2>Grids</h2>
             <div class="ui-grid ui-size-a">
                 <div class="ui-grid-row">

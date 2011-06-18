@@ -381,7 +381,7 @@ html {
   margin-bottom: $default-body-padding;
 }
 
-.ui-body {
+.ui-panel {
   @include border-radius(10px);
   padding: $default-body-padding;
   margin: $default-body-padding;
@@ -391,7 +391,7 @@ html {
     rgba(#fff, 0)                50%
   ));
 
-  .ui-body {
+  .ui-panel {
     margin-left: 0;
     margin-right: 0;
   }
@@ -400,25 +400,38 @@ html {
 .ui-collapsible {
   $negative-margin: (($default-body-padding + 1) * -1);
 
-  & > .ui-button {
-    margin: $negative-margin $negative-margin $default-body-padding $negative-margin;
-  }
-
-  &:not(.ui-closed) > .ui-button { border-bottom: none; }
-
   &.ui-closed {
     * { @extend .ui-collapsed; }
 
     & > .ui-button {
       display: block !important;
       visibility: visible !important;
-      margin-bottom: $negative-margin;
     }
   }
 
-  & > *:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
+  &:not(.ui-closed) > .ui-button { border-bottom: none; }
+
+  &.ui-panel {
+    & > .ui-button { margin: $negative-margin $negative-margin $default-body-padding $negative-margin; }
+
+    & > *:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    &.ui-closed > .ui-button { margin-bottom: $negative-margin; }
+  }
+
+  & > .ui-button + .ui-panel {
+    @include border-radius(0 0 10px 10px);
+    border-top: none;
+    margin-top: $negative-margin;
+    padding-top: $default-body-padding * 2;
+
+    & > *:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
   }
 }
 
