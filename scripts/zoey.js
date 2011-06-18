@@ -320,17 +320,17 @@ self.widgets = {
     // DISABLED: }
   }
 };
-self.role = function(control, role) {
-  var $control = $(control);
-  var widget = self.widgets[role];
-  $control.hasClass('ui-' + role) || (widget && widget.call($control));
-  $control.addClass('ui-widget ui-' + role);
+self.role = function(element, role) {
+  var $widget = $(element);
+  var block = self.widgets[role];
+  $widget.hasClass('ui-' + role) || (block && block.call($widget));
+  $widget.addClass('ui-widget ui-' + role);
   ['theme', 'icon', 'icon-position', 'size', 'position'].forEach(function(type) {
-    $control.data(type) && $control.addClass('ui-has-' + type + ' ui-' + type + '-' + $control.data(type));
+    $widget.data(type) && $widget.addClass('ui-has-' + type + ' ui-' + type + '-' + $widget.data(type));
   });
   var themeRegExp = /\bui-theme-(\w+)\b/;
   var getTheme = function() { var list = themeRegExp.exec(this.className); return (list && list[1]); };
-  var parent = $control.get(0);
+  var parent = $widget.get(0);
   var inheritedTheme;
   do {
     inheritedTheme = $(parent).data('theme');
@@ -342,7 +342,7 @@ self.role = function(control, role) {
     }
   } while ((parent = parent.parentNode) && (parent !== document));
   inheritedTheme || (inheritedTheme = getTheme.call(document.documentElement));
-  inheritedTheme && $control.addClass('ui-inherit-theme-' + inheritedTheme);
+  inheritedTheme && $widget.addClass('ui-inherit-theme-' + inheritedTheme);
 };
 self.initialize = function(scope, options) {
   options || (options = {});
