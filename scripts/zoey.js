@@ -33,12 +33,22 @@ var $highlight = [];
 var pageSequence = 0;
 var pageHash;
 var $fixedWidgets = [];
-function scrollTop(offset) {
+function uiScrollTop(offset) {
   if (arguments.length) {
     document.body.scrollTop = document.documentElement.scrollTop = window.pageYOffset = offset;
   } else {
     return (document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset);
   }
+};
+function uiPersistScroll($page) {
+  $page && ($page.data('zoey:scroll-top') === undefined) && $page.data('zoey:scroll-top', uiScrollTop());
+};
+function uiRestoreScroll($page) {
+  $page && setTimeout(function() {
+    uiScrollTop($page.data('zoey:scroll-top') || 0);
+    $page.removeAttr('data-zoey:scroll-top');
+    // DISABLED: self.updateLayout();
+  }, 75);
 };
 self.loading = function(display) {
   if (display) {
@@ -54,29 +64,26 @@ self.loading = function(display) {
 };
 self.showPage = function($page, options) {
   var id = $page.attr('id');
-  if ($visiblePage && $visiblePage.attr('id') === id) {
-    return self;
+  if ($visiblePage && $visiblePage.attr('id') !== id) {
+    options || (options = {});
+    ($hiddenPage && $hiddenPage.attr('id') !== id) && $hiddenPage.trigger('pagebeforehide').trigger('pagehide');
+    if (options.type === 'dialog') {
+      uiPersistScroll($visiblePage);
+      $hiddenPage = $visiblePage;
+      $visiblePage && $visiblePage.addClass('ui-collapsed');
+    } else {
+      uiPersistScroll($visiblePage);
+      $hiddenPage = null;
+      $visiblePage && $visiblePage.trigger('pagebeforehide').addClass('ui-collapsed').trigger('pagehide');
+    }
+    $highlight.length && $highlight.removeClass('ui-highlight');
+    $highlight = $page.find('[href="#' + id + '"]').addClass('ui-highlight');
+    $visiblePage = $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
+    // DISABLED: $visiblePage.reflow();
+    uiRestoreScroll($visiblePage);
+    options.event && options.event.stopPropagation();
+    $page.get(0).focus();
   }
-  options || (options = {});
-  ($hiddenPage && $hiddenPage.attr('id') !== id) && $hiddenPage.trigger('pagebeforehide').trigger('pagehide');
-  if (options.type === 'dialog') {
-    $hiddenPage = $visiblePage;
-    $visiblePage && $visiblePage.data('zoey:scroll-top', scrollTop()).addClass('ui-collapsed');
-  } else {
-    $hiddenPage = null;
-    $visiblePage && $visiblePage.data('zoey:scroll-top', scrollTop()).trigger('pagebeforehide').addClass('ui-collapsed').trigger('pagehide');
-  }
-  $highlight.length && $highlight.removeClass('ui-highlight');
-  $highlight = $page.find('[href="#' + id + '"]').addClass('ui-highlight');
-  $visiblePage = $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
-  // DISABLED: $visiblePage.reflow();
-  setTimeout(function() {
-    scrollTop($visiblePage.data('zoey:scroll-top') || 0);
-    // DISABLED: self.updateLayout();
-  }, 125);
-  options.event && options.event.stopPropagation();
-  $page.get(0).focus();
-  return self;
 };
 self.createPages = function(html, options) {
   var $result = $('<div>').html(html);
@@ -93,7 +100,7 @@ self.createPages = function(html, options) {
     if ( ! id || $('#' + id).length) {
       $page.attr({ id: 'page-' + (++ pageSequence) });
     }
-    self.role.call($page, 'page');
+    self.role($page, 'page');
     if ($page.data('cache') === 'true') {
       $cachedPages[target] = $page;
     } else {
@@ -152,7 +159,6 @@ self.changePage = function(options) {
   } else {
     options.event && options.event.preventDefault();
   }
-  return self;
 };
 self.closeDialog = function() {
   self.changePage({
@@ -205,6 +211,7 @@ self.widgets = {
         if ($hiddenPage) {
           self.closeDialog();
         } else {
+          uiPersistScroll($visiblePage);
           history.back();
         }
         event.preventDefault();
@@ -265,7 +272,7 @@ self.widgets = {
   },
   list: function() {
     this.children().each(function() {
-      self.role.call($(this), 'button');
+      self.role(this, 'button');
     });
     // DISABLED: var buttons = this.find('[data-role="button"]'),
     // DISABLED:     split   = this.data('split-icon'),
@@ -294,7 +301,7 @@ self.widgets = {
     var $first = $this.children().first();
     var icons = ['arrow-d', 'arrow-r'];
     ($this.data('collapsed') === 'true') && $this.addClass('ui-closed');
-    self.role.call($first.data('icon', $this.hasClass('ui-closed') ? icons[1] : icons[0]), 'button');
+    self.role($first.data('icon', $this.hasClass('ui-closed') ? icons[1] : icons[0]), 'button');
     $first.bind('click', function() {
       $this.toggleClass('ui-closed');
       if ($this.hasClass('ui-closed')) {
@@ -313,8 +320,8 @@ self.widgets = {
     // DISABLED: }
   }
 };
-self.role = function(role) {
-  var $control = this;
+self.role = function(control, role) {
+  var $control = $(control);
   var widget = self.widgets[role];
   $control.hasClass('ui-' + role) || (widget && widget.call($control));
   $control.addClass('ui-widget ui-' + role);
@@ -341,7 +348,7 @@ self.initialize = function(scope, options) {
   options || (options = {});
   scope || $('html').addClass('ui-theme-' + (options.theme || 'c'));
   (scope || $('html')).find('[data-role], input[type="button"], input[type="submit"], button').each(function() {
-    self.role.apply($(this), [$(this).data('role') || 'button']);
+    self.role(this, $(this).data('role') || 'button');
   });
   if ( ! scope) {
     $(window).bind('hashchange', function(event) {
@@ -354,7 +361,7 @@ self.initialize = function(scope, options) {
         });
       }
     }).trigger('hashchange').bind('resize scroll orientationchange', function() {
-      // DISABLED: var top = scrollTop(), reflow = false;
+      // DISABLED: var top = uiScrollTop(), reflow = false;
       // DISABLED: for (var i = 0; i < $fixedWidgets.length; i ++) {
       // DISABLED:   var config = $fixedWidgets[i];
       // DISABLED:   if (config[1].hasClass('ui-collapsed')) {
@@ -381,7 +388,7 @@ self.initialize = function(scope, options) {
         width:  window.innerWidth + 'px',
         height: document.body.scrollHeight + 'px'
       }).children().css({
-        top:  (scrollTop() + Math.round(window.innerHeight / 2)) + 'px',
+        top:  (uiScrollTop() + Math.round(window.innerHeight / 2)) + 'px',
         left: Math.round(window.innerWidth  / 2) + 'px'
       });
     });
