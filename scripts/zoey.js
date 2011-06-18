@@ -66,22 +66,22 @@ self.showPage = function($page, options) {
   var id = $page.attr('id');
   if ( ! $visiblePage || $visiblePage.attr('id') !== id) {
     options || (options = {});
+    options.event && options.event.stopPropagation();
     ($hiddenPage && $hiddenPage.attr('id') !== id) && $hiddenPage.trigger('pagebeforehide').trigger('pagehide');
+    uiPersistScroll($visiblePage);
     if (options.type === 'dialog') {
-      uiPersistScroll($visiblePage);
       $hiddenPage = $visiblePage;
       $visiblePage && $visiblePage.addClass('ui-collapsed');
     } else {
-      uiPersistScroll($visiblePage);
       $hiddenPage = null;
       $visiblePage && $visiblePage.trigger('pagebeforehide').addClass('ui-collapsed').trigger('pagehide');
     }
     $highlight.length && $highlight.removeClass('ui-highlight');
     $highlight = $page.find('[href="#' + id + '"]').addClass('ui-highlight');
-    $visiblePage = $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
-    // DISABLED: $visiblePage.reflow();
-    uiRestoreScroll($visiblePage);
-    options.event && options.event.stopPropagation();
+    $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
+    // DISABLED: $page.reflow();
+    uiRestoreScroll($page);
+    $visiblePage = $page;
     $page.get(0).focus();
   }
 };
