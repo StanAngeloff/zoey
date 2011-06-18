@@ -151,11 +151,12 @@ html {
 }
 
 .ui-navigation {
-  display: table;
+  @include clearfix;
   width: 100%;
 
   & > * {
-    display: table-cell;
+    float: left;
+    display: block;
 
     & > .ui-button {
       border-right-width: 0;
@@ -181,11 +182,12 @@ html {
 
 .ui-group {
   @include border-radius(8px);
-  display: table;
+  @include clearfix;
   width: 100%;
 
   &.ui-orientation-horizontal > * {
-    display: table-cell;
+    float: left;
+    display: block;
 
     &.ui-button, & > .ui-button {
       border-right-width: 0;
