@@ -171,8 +171,8 @@ html {
       &:last-child  > .ui-button { border-right:  none; }
     }
 
-    .ui-body &:first-child > .ui-button { @include border-radius(8px 0 0 8px); }
-    .ui-body &:last-child  > .ui-button { @include border-radius(0 8px 8px 0); }
+    .ui-content &:first-child > .ui-button { @include border-radius(8px 0 0 8px); }
+    .ui-content &:last-child  > .ui-button { @include border-radius(0 8px 8px 0); }
   }
 
   .ui-header > & { margin-bottom: -1px; }
