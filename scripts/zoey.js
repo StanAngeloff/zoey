@@ -318,7 +318,7 @@ self.role = function(role) {
   var widget = self.widgets[role];
   $control.hasClass('ui-' + role) || (widget && widget.call($control));
   $control.addClass('ui-widget ui-' + role);
-  ['theme', 'icon'].forEach(function(type) {
+  ['theme', 'icon', 'icon-position', 'size'].forEach(function(type) {
     $control.data(type) && $control.addClass('ui-has-' + type + ' ui-' + type + '-' + $control.data(type));
   });
   var themeRegExp = /\bui-theme-(\w+)\b/;
