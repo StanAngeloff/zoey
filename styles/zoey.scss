@@ -271,6 +271,10 @@ html {
     border-color: rgba(#000, opacity-level(50));
   }
 
+  & > a { text-decoration: none !important; }
+  #{themes(dark,  '&.ui-inherit-theme-', '> a')} { color: #fff !important; }
+  #{themes(light, '&.ui-inherit-theme-', '> a')} { color: #000 !important; }
+
   * { margin: 0; }
 
   .ui-header > & {
