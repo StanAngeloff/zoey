@@ -247,8 +247,8 @@ html {
     rgba(#000, opacity-level(10)) 100%
   ));
   @include box-shadow(
-    inset 0  1px 0 rgba(#fff, opacity-level(50)),
-    inset 0 -1px 0 rgba(#000, opacity-level(50))
+    inset 0  1px 1px rgba(#fff, opacity-level(50)),
+    inset 0 -1px 1px rgba(#000, opacity-level(50))
   );
   border: 1px solid rgba(#000, opacity-level(25));
   @include border-radius(8px);
@@ -265,8 +265,8 @@ html {
       rgba(#000, opacity-level(25))
     ));
     @include box-shadow(
-      inset 0  1px 0 rgba(#fff, opacity-level(25)),
-      inset 0 -1px 0 rgba(#000, opacity-level(25))
+      inset 0  1px 1px rgba(#fff, opacity-level(25)),
+      inset 0 -1px 1px rgba(#000, opacity-level(25))
     );
     border-color: rgba(#000, opacity-level(50));
   }
@@ -324,11 +324,6 @@ html {
   th, td, caption   { padding: 4px 10px 4px 5px; }
   tfoot             { font-style: italic; }
   caption           { background: $blueprint-background-color; }
-
-  // input[type="checkbox"],
-  // input[type="radio"] {
-  //   vertical-align: middle;
-  // }
 
   input[type="text"],
   input[type="email"],
@@ -442,7 +437,7 @@ $widgets-list: false;
 }
 
 @if ($widgets-list) {
-  #{$widgets-list} { @include text-shadow(0 1px 0 #000); }
+  #{$widgets-list} { @include text-shadow(0 1px 1px #000); }
 }
 
 $widgets-list: false;
@@ -452,7 +447,7 @@ $widgets-list: false;
 }
 
 @if ($widgets-list) {
-  #{$widgets-list} { @include text-shadow(0 1px 0 #fff); }
+  #{$widgets-list} { @include text-shadow(0 1px 1px #fff); }
 }
 
 // ICONS ---------------------------------------------------------------------
