@@ -64,7 +64,7 @@ self.loading = function(display) {
 };
 self.showPage = function($page, options) {
   var id = $page.attr('id');
-  if ($visiblePage && $visiblePage.attr('id') !== id) {
+  if ( ! $visiblePage || $visiblePage.attr('id') !== id) {
     options || (options = {});
     ($hiddenPage && $hiddenPage.attr('id') !== id) && $hiddenPage.trigger('pagebeforehide').trigger('pagehide');
     if (options.type === 'dialog') {
@@ -325,7 +325,7 @@ self.role = function(control, role) {
   var widget = self.widgets[role];
   $control.hasClass('ui-' + role) || (widget && widget.call($control));
   $control.addClass('ui-widget ui-' + role);
-  ['theme', 'icon', 'icon-position', 'size'].forEach(function(type) {
+  ['theme', 'icon', 'icon-position', 'size', 'position'].forEach(function(type) {
     $control.data(type) && $control.addClass('ui-has-' + type + ' ui-' + type + '-' + $control.data(type));
   });
   var themeRegExp = /\bui-theme-(\w+)\b/;
