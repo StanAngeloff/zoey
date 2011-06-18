@@ -237,6 +237,16 @@ html {
     border-bottom-width: 1px;
     @include border-radius(0 0 8px 8px);
   }
+
+  .ui-content > & {
+    &, & > .ui-button {
+      @include border-radius(0);
+      border-left: none;
+      border-right: none;
+    }
+    & > .ui-button:first-child { border-top:    none; }
+    & > .ui-button:last-child  { border-bottom: none; }
+  }
 }
 
 .ui-button {
