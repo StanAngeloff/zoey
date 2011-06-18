@@ -1,19 +1,19 @@
 // USER CONFIGURABLE OPTIONS (adjust to your liking) -------------------------
 
-$base-colors:        #000 #5780d8 #ccc #fff #fd4;
-$base-font-size:     16px;
-$base-font-family:   'Trebuchet MS', TrebuchetMS, sans-serif;
-$base-opacity-scale: 1;
+$base-colors:        #000 #5780d8 #ccc #fff #fd4 !default;
+$base-font-size:     16px !default;
+$base-font-family:   'Trebuchet MS', TrebuchetMS, sans-serif !default;
+$base-opacity-scale: 1 !default;
 
 // DEFAULT OPTIONS (you wouldn't normally change these) ----------------------
 
-$default-darkness-threshold: 60%;
-$default-shadow-widgets: page-title button;
-$default-header-padding: 8px;
-$default-body-padding: 10px;
-$default-icon-size: 16px;
-$default-icons: arrow-r arrow-d arrow-l;
-$default-highlight-color: nth($base-colors, 2);
+$default-darkness-threshold: 60% !default;
+$default-shadow-widgets: page-title button !default;
+$default-header-padding: 8px !default;
+$default-body-padding: 10px !default;
+$default-icon-size: 16px !default;
+$default-icons: arrow-r arrow-d arrow-l !default;
+$default-highlight-color: nth($base-colors, 2) !default;
 
 // PREREQUISITES -------------------------------------------------------------
 
