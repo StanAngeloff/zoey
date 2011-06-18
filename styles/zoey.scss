@@ -180,6 +180,7 @@ html {
 }
 
 .ui-group {
+  @include border-radius(8px);
   display: table;
   width: 100%;
 
@@ -218,6 +219,7 @@ html {
 }
 
 .ui-list {
+  @include border-radius(8px);
 
   & > .ui-button {
     border-bottom-width: 0;
