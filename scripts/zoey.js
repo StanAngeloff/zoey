@@ -283,22 +283,16 @@ self.widgets = {
     // DISABLED: });
   },
   group: function() {
-    // DISABLED: var $children, type = this.data('type');
-    // DISABLED: this.addClass('ui-control-group').addClass('orientation-' + (type || 'horizontal')).addTheme('d', true, true);
-    // DISABLED: if (type !== 'vertical') {
-    // DISABLED:   $children = this.children();
-    // DISABLED:   $children.css({ width: (100 / $children.length) + '%' });
-    // DISABLED: }
-    // DISABLED: $children = this.find('input');
-    // DISABLED: if ($children.length) {
-    // DISABLED:   var self = this;
-    // DISABLED:   this.delegate('input', 'change', function() {
-    // DISABLED:     $children.each(function() {
-    // DISABLED:       $(this).closest('[data-role="button"]')[this.checked ? 'addClass' : 'removeClass']('highlight');
-    // DISABLED:     });
-    // DISABLED:   });
-    // DISABLED:   $children.first().trigger('change');
-    // DISABLED: }
+    var orientation = this.data('orientation');
+    this.addClass('ui-orientation-' + (orientation || 'horizontal'));
+    (orientation === 'vertical') || self.widgets.navigation.call(this);
+    var $children = this.find('input');
+    this.delegate('input', 'change', function() {
+      $children.each(function() {
+        $(this).closest('[data-role]')[this.checked ? 'addClass' : 'removeClass']('ui-highlight');
+      });
+    });
+    $children.first().trigger('change');
   },
   collapsible: function() {
     var $this = this;

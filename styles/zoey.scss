@@ -13,10 +13,9 @@ $default-header-padding: 8px;
 $default-body-padding: 10px;
 $default-icon-size: 16px;
 $default-icons: arrow-r arrow-d arrow-l;
+$default-highlight-color: nth($base-colors, 2);
 
 // PREREQUISITES -------------------------------------------------------------
-
-$show-grid-backgrounds: false;
 
 @import 'compass';
 @import 'compass/layout/grid-background';
@@ -52,14 +51,18 @@ $icons: sprite-map('icons/*.png', $spacing: $default-icon-size * 8);
   @return clamp(($base-opacity-scale * $level) / 100, 0, 1);
 }
 
+@function threshold($index) {
+  @return (lightness(nth($base-colors, $index)) >= $default-darkness-threshold);
+}
+
 @function themes($type, $before: '.ui-theme-', $after: '') {
   $list: false;
   @for $index from 1 through length($base-colors) {
     $accept: false;
-    @if lightness(nth($base-colors, $index)) < $default-darkness-threshold {
-      $accept: if($type == 'dark', true, false);
-    } @else {
+    @if threshold($index) {
       $accept: if($type == 'light', true, false);
+    } @else {
+      $accept: if($type == 'dark', true, false);
     }
     @if $accept {
       $append: unquote($before + letter($index) + $after);
@@ -82,31 +85,6 @@ html {
 
     &, &:focus { outline: none; }
   }
-}
-
-.ui-collapsed {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-.ui-disabled,
-.ui-disabled:hover,
-.ui-disabled:active {
-  @include opacity(0.5 !important);
-  @include text-shadow(none !important);
-}
-
-.ui-inline {
-  @include inline-block;
-  vertical-align: top;
-}
-
-.ui-grid      { display: table; }
-.ui-grid-row  { display: table-row; }
-.ui-grid-cell { display: table-cell; }
-
-@for $index from 1 through 10 {
-  .ui-size-#{letter($index)} { width: (100% / $index); }
 }
 
 @-webkit-keyframes uiDelayedFadeIn {
@@ -181,7 +159,6 @@ html {
 
     & > .ui-button {
       border-right-width: 0;
-      border-right-width: 0;
       @include border-radius(0);
     }
 
@@ -200,6 +177,44 @@ html {
 
   .ui-header > & { margin-bottom: -1px; }
   .ui-footer > & { margin-top:    -1px; }
+}
+
+.ui-group {
+  display: table;
+  width: 100%;
+
+  &.ui-orientation-horizontal > * {
+    display: table-cell;
+
+    &.ui-button, & > .ui-button {
+      border-right-width: 0;
+      @include border-radius(0);
+    }
+
+    &.ui-button:first-child, &:first-child > .ui-button { @include border-radius(8px 0 0 8px); }
+    &.ui-button:last-child,  &:last-child  > .ui-button {
+      border-right-width: 1px;
+      @include border-radius(0 8px 8px 0);
+    }
+  }
+
+  &.ui-orientation-vertical > * {
+
+    &.ui-button, & > .ui-button {
+      border-bottom-width: 0;
+      border-top-width: 0;
+      @include border-radius(0);
+    }
+
+    &.ui-button:first-child, &:first-child > .ui-button {
+      border-top-width: 1px;
+      @include border-radius(8px 8px 0 0);
+    }
+    &.ui-button:last-child,  &:last-child  > .ui-button {
+      border-bottom-width: 1px;
+      @include border-radius(0 0 8px 8px);
+    }
+  }
 }
 
 .ui-button {
@@ -261,32 +276,90 @@ html {
   h4 { @include adjust-font-size-to($base-font-size * 1.4); }
   h5 { @include adjust-font-size-to($base-font-size * 1.2); }
   h6 { font-weight: bold; }
-  p  { margin: 0 0 rhythm(); }
+  p  { margin: 0 0 $default-body-padding; }
   a#{$not-widgets}  { text-decoration: underline; @include link-colors($link-color, $link-hover-color, $link-active-color, $link-visited-color, $link-focus-color); }
-  blockquote        { margin: rhythm(); color: $alt-text-color; font-style: italic; }
+  blockquote        { margin: $default-body-padding; color: $alt-text-color; font-style: italic; }
   strong, dfn       { font-weight: bold; }
   em, dfn           { font-style: italic; }
   sup, sub          { line-height: 0; }
   abbr, acronym     { border-bottom: 1px dotted #666666; }
-  address           { margin: 0 0 rhythm(); font-style: italic; }
+  address           { margin: 0 0 $default-body-padding; font-style: italic; }
   del               { color: $alt-text-color; }
-  pre               { margin: rhythm() 0; white-space: pre; }
+  pre               { margin: $default-body-padding 0; white-space: pre; }
   pre, code, tt     { @include fixed-width-text; }
   li ul#{$not-widgets},
   li ol             { margin: 0; }
   ul#{$not-widgets},
-  ol#{$not-widgets} { margin: 0 rhythm() rhythm() 0; padding-left: rhythm(); }
+  ol#{$not-widgets} { margin: 0 $default-body-padding $default-body-padding 0; padding-left: $default-body-padding * 2; }
   ul#{$not-widgets} { list-style-type: disc; }
   ol#{$not-widgets} { list-style-type: decimal; }
-  dl                { margin: 0 0 rhythm() 0;
+  dl                { margin: 0 0 $default-body-padding 0;
     dt              { font-weight: bold; }
-    dd              { margin-left: rhythm(); } }
-  table             { margin-bottom: rhythm(); width: 100%; }
+    dd              { margin-left: $default-body-padding; } }
+  table             { margin-bottom: $default-body-padding; width: 100%; }
   th                { font-weight: bold; }
   thead th          { background: $blueprint-table-header-color; }
   th, td, caption   { padding: 4px 10px 4px 5px; }
   tfoot             { font-style: italic; }
   caption           { background: $blueprint-background-color; }
+
+  // input[type="checkbox"],
+  // input[type="radio"] {
+  //   vertical-align: middle;
+  // }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    $box-height: rhythm() * 1.25;
+    background-color: #fff;
+    border: 1px solid rgba(#000, opacity-level(25));
+    @include border-radius(4px);
+    color: #000;
+    margin: 0;
+    height: $box-height;
+    line-height: $box-height - 0.2em;
+    padding: 2px 5px;
+    display: block;
+    width: 100%;
+    @include box-sizing(border-box);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    @include box-shadow(inset 0 1px 2px rgba(#000, opacity-level(25)));
+    -webkit-appearance: none;
+
+    &:focus {
+      outline: none;
+      @include box-shadow(
+        inset 0 1px 2px rgba(#fff, opacity-level(10)),
+        0 0 8px rgba($default-highlight-color, opacity-level(75))
+      );
+      border-color: rgba(#000, opacity-level(50));
+    }
+  }
+
+  select {
+    background: sprite($icons, 'arrow-d-dark', 5px, 8px) no-repeat;
+    padding-left: 5px + $default-icon-size + 5px;
+  }
+}
+
+.ui-field {
+  list-style-type: none;
+  margin-left: $default-body-padding * -2;
+  margin-right: $default-body-padding * -1;
+  margin-bottom: $default-body-padding;
 }
 
 .ui-body {
@@ -295,10 +368,9 @@ html {
   margin: $default-body-padding;
   border: 1px solid rgba(#000, opacity-level(25));
   @include background-image(linear-gradient(
-    rgba(#fff, 0.5) 0%,
-    rgba(#fff, 0)  50%
+    rgba(#fff, opacity-level(50)) 0%,
+    rgba(#fff, 0)                50%
   ));
-  @include baseline-grid-background($base-line-height, rgba(0, 0, 0, 0.25));
 
   .ui-body {
     margin-left: 0;
@@ -310,9 +382,7 @@ html {
   $negative-margin: (($default-body-padding + 1) * -1);
 
   & > .ui-button {
-    margin-top: $negative-margin;
-    margin-right: $negative-margin;
-    margin-left: $negative-margin;
+    margin: $negative-margin $negative-margin $default-body-padding $negative-margin;
   }
 
   &:not(.ui-closed) > .ui-button { border-bottom: none; }
@@ -326,12 +396,17 @@ html {
       margin-bottom: $negative-margin;
     }
   }
+
+  & > *:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
 }
 
 .ui-footer {
   @include background-image(linear-gradient(
-    rgba(#fff, 0.25) 0%,
-    rgba(#fff, 0)   50%
+    rgba(#fff, opacity-level(25)) 0%,
+    rgba(#fff, 0)                50%
   ));
   border-top: 1px solid rgba(#000, opacity-level(10));
   position: relative;
@@ -389,12 +464,45 @@ $widgets-list: false;
   #{themes(light, '.ui-inherit-theme-', '.ui-icon-#{$icon}:before')} { background: sprite($icons, '#{$icon}-dark'); }
 }
 
+// GENERAL -------------------------------------------------------------------
+
+.ui-collapsed {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.ui-disabled,
+.ui-disabled:hover,
+.ui-disabled:active {
+  @include opacity(0.5 !important);
+  @include text-shadow(none !important);
+}
+
+.ui-inline {
+  @include inline-block;
+  vertical-align: top;
+}
+
+.ui-grid      { display: table; }
+.ui-grid-row  { display: table-row; }
+.ui-grid-cell { display: table-cell; }
+
+@for $index from 1 through 10 {
+  .ui-size-#{letter($index)} { width: (100% / $index); }
+}
+
 // THEMES --------------------------------------------------------------------
 
 @for $index from 1 through length($base-colors) {
   $base-color: nth($base-colors, $index);
 
   .ui-theme-#{letter($index)} { background-color: $base-color; }
+  @if threshold($index) {
+    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#000, $base-color, 10%); }
+  } @else {
+    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#fff, $base-color, 10%); }
+  }
+
   #{themes(dark)}  { color: #fff; }
   #{themes(light)} { color: #000; }
 }
