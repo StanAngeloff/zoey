@@ -215,6 +215,8 @@ self.widgets = {
           type:   type
         });
       }
+    }).delegate('.ui-button:not(a)', 'click', function(event) {
+      (this === event.target) && $(this).children('a').trigger('click', event);
     }).delegate('form', 'submit', function(event) {
       var $this = $(this);
       if ($this.data('ajax') === 'false') {
@@ -262,25 +264,18 @@ self.widgets = {
     // DISABLED: });
   },
   list: function() {
+    this.children().each(function() {
+      self.role.call($(this), 'button');
+    });
     // DISABLED: var buttons = this.find('[data-role="button"]'),
     // DISABLED:     split   = this.data('split-icon'),
     // DISABLED:     icon    = this.data('icon');
-    // DISABLED: this.addClass('ui-list-view').addClass('align-' + (this.data('iconpos') || 'right')).addTheme('d', true, false);
     // DISABLED: if (this.data('inset') === 'true') {
     // DISABLED:   this.addClass('ui-inset');
     // DISABLED: }
-    // DISABLED: buttons.addTheme('d', false, false);
     // DISABLED: if (split) {
     // DISABLED:   buttons.addIcon(split);
     // DISABLED: }
-    // DISABLED: this.find('li').each(function() {
-    // DISABLED:   var $this = $(this), children = $this.children();
-    // DISABLED:   $this.addIcon(icon);
-    // DISABLED:   if (children.length && children[0].tagName === 'A') {
-    // DISABLED:     $(children[0]).addClass('ui-a-block');
-    // DISABLED:     $this.addClass('ui-li-block');
-    // DISABLED:   }
-    // DISABLED: });
   },
   group: function() {
     var orientation = this.data('orientation');

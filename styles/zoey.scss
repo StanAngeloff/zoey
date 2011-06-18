@@ -217,6 +217,24 @@ html {
   }
 }
 
+.ui-list {
+
+  & > .ui-button {
+    border-bottom-width: 0;
+    border-top-width: 0;
+    @include border-radius(0);
+  }
+
+  & > .ui-button:first-child {
+    border-top-width: 1px;
+    @include border-radius(8px 8px 0 0);
+  }
+  & > .ui-button:last-child {
+    border-bottom-width: 1px;
+    @include border-radius(0 0 8px 8px);
+  }
+}
+
 .ui-button {
   $button-height: rhythm() * 1.5;
   display: block;
