@@ -457,6 +457,8 @@ html {
   z-index: 100;
 }
 
+// SHADOWS -------------------------------------------------------------------
+
 $widgets-list: false;
 @each $widget in $default-shadow-widgets {
   $append: #{themes(dark, '.ui-inherit-theme-', '.ui-#{$widget}')};
