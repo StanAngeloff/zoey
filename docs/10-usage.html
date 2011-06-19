@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang=en>
+<head>
+    <title>Zoey &mdash; Usage</title>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
+    <link rel=stylesheet href=release/zoey-0.2.min.css>
+</head>
+<body>
+
+<article id=home data-role=page>
+    <header data-role=header data-theme=b>
+        <a href=../index.html data-role=button data-rel=back data-icon=arrow-l>Back</a>
+        <h1 data-role=page-title>Usage</h1>
+    </header>
+    <div data-role=content>
+        <div data-role=panel data-theme=d>
+            <h2>Obtaining a Copy</h2>
+            <p>You can grab the latest version from <a href=https://github.com/StanAngeloff/zoey/archives/develop>Github</a>.</p>
+            <p>Extract the contents of the archive to an empty directory. You should have the following files:</p>
+            <ul>
+                <li><strong>zoey-X.Y.min.js</strong><br>Stand-alone Zoey script</li>
+                <li><strong>zoey-X.Y.bundle.min.js</strong><br>Zoey and zepto.js compiled in one file</li>
+                <li><strong>zoey-X.Y.min.css</strong><br>Default theme</li>
+                <li><strong>images/</strong><br>Images used by the default theme</li>
+            </ul>
+            <h2>Installation</h2>
+            <p>Zoey doesn't care about your project layout. Copy all <code>*.js</code> files to your <code>scripts</code> directory. Copy the <code>.css</code> file and <code>images</code> to your <code>stylesheets</code> directory.</p>
+            <h2>Usage</h2>
+            <p>With the files now in place, start a new HTM5 document and reference the <code>.css</code> and <code>.js</code> file as shown below:</p>
+            <pre>&lt;html&gt;
+&lt;head&gt;
+  [.. snip ..]
+  <strong>&lt;link rel=stylesheet href=stylesheets/zoey-X.Y.min.css&gt;</strong>
+&lt;/head&gt;
+&lt;body&gt;
+  [.. snip ..]
+  <strong>&lt;script src=scripts/zoey-X.Y.bundle.min.js&gt;&lt;/script&gt;</strong>
+&lt;/body&gt;
+            </pre>
+            <p>Make sure the <code>.js</code> file is included immediately before the <code>&lt;/body&gt;</code> and not in your <code>&lt;head&gt;</code> section.</p>
+            <p>If you already have zepto.js referenced in your project, use <code>zoey-X.Y.min.js</code> instead of the <code>bundle</code>.</p>
+            <p>
+                <a href=index.html data-role=button data-icon=arrow-l>Table of Contents</a>
+            </p>
+        </div>
+    </div>
+    <footer data-role=footer>
+        <ul data-role=navigation>
+            <li><a href=https://github.com/StanAngeloff/zoey data-role=button rel=external>Fork on Github</a></li>
+        </ul>
+    </footer>
+</article>
+
+<script src=release/zoey-0.2.bundle.min.js></script>
+
+</body>
+</html>
