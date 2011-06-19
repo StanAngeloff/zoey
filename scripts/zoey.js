@@ -314,12 +314,14 @@ self.initialize = function(scope, options) {
         });
       }
     }).trigger('hashchange').bind('resize scroll orientationchange', function() {
+      var width = window.innerWidth;
+      var height = window.innerHeight;
       $loading && $loading.css({
-        width:  window.innerWidth + 'px',
+        width:  width + 'px',
         height: document.body.scrollHeight + 'px'
       }).children().css({
-        top:  (uiScrollTop() + Math.round(window.innerHeight / 2)) + 'px',
-        left: Math.round(window.innerWidth  / 2) + 'px'
+        top:  (uiScrollTop() + Math.round(height / 2)) + 'px',
+        left: Math.round(height  / 2) + 'px'
       });
     });
     if ( ! window.onhashchange) {

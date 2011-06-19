@@ -32,21 +32,28 @@ zepto:
 styles:
 	@@echo 'Compiling default styles...'
 	@@compass compile --quiet --css-dir=styles --sass-dir=styles --images-dir='styles/images' --environment=production --output-style=compressed --relative-assets --force
-	@@mv -f 'styles/zoey.css' '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css'
+	@@java -jar _assets/yuicompressor-2.4.6.jar --type css --charset utf8 -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' 'styles/zoey.css'
 	@@mkdir -p '$(RELEASE_PATH)/images'
 	@@cp -f 'styles/images/'*.png '$(RELEASE_PATH)/images/'
 
 minify:
 	@@echo 'Minifying bundle...'
 	@@cp -f scripts/zoey.js '$(RELEASE_PATH)/zoey.js'
-	@@# Save ~150 bytes
-	@@sed -i -e "s/'zoey:scroll-top'/C_SCROLL_TOP/g" -e "s/var VERSION/var C_SCROLL_TOP = 'zoey:scroll-top'; \0/"  "$(RELEASE_PATH)/zoey.js"
-	@@sed -i -e "s/'ui-collapsed'/C_COLLAPSED/g" -e "s/var VERSION/var C_COLLAPSED = 'ui-collapsed'; \0/"  "$(RELEASE_PATH)/zoey.js"
-	@@sed -i -e "s/\.hasClass(/[C_HAS_CLASS](/g" -e "s/var VERSION/var C_HAS_CLASS = 'hasClass'; \0/"  "$(RELEASE_PATH)/zoey.js"
-	@@sed -i -e "s/\.removeClass(/[C_REMOVE_CLASS](/g" -e "s/var VERSION/var C_REMOVE_CLASS = 'removeClass'; \0/"  "$(RELEASE_PATH)/zoey.js"
-	@@sed -i -e "s/\.addClass(/[C_ADD_CLASS](/g" -e "s/var VERSION/var C_ADD_CLASS = 'addClass'; \0/"  "$(RELEASE_PATH)/zoey.js"
-	@@sed -i -e "s/\.data(/[C_DATA](/g" -e "s/var VERSION/var C_DATA = 'data'; \0/"  "$(RELEASE_PATH)/zoey.js"
-	@@sed -i -e "s/\.attr(/[C_ATTR](/g" -e "s/var VERSION/var C_ATTR = 'attr'; \0/"  "$(RELEASE_PATH)/zoey.js"
+	@@# Save ~250 bytes
+	@@sed -i -e "s/'zoey:scroll-top'/C_SCROLL_TOP/g" -e "s/var VERSION/var C_SCROLL_TOP = 'zoey:scroll-top'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'data-zoey:scroll-top'/'data-' + C_SCROLL_TOP/g" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'ui-collapsed'/C_COLLAPSED/g" -e "s/var VERSION/var C_COLLAPSED = 'ui-collapsed'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'<div>'/C_DIV/g" -e "s/var VERSION/var C_DIV = '<div>'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'hashchange'/C_HASHCHANGE/g" -e "s/var VERSION/var C_HASHCHANGE = 'hashchange'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/\.hasClass(/[C_HAS_CLASS](/g" -e "s/var VERSION/var C_HAS_CLASS = 'hasClass'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/\.removeClass(/[C_REMOVE_CLASS](/g" -e "s/'removeClass'/C_REMOVE_CLASS/g" -e "s/var VERSION/var C_REMOVE_CLASS = 'removeClass'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/\.addClass(/[C_ADD_CLASS](/g" -e "s/'addClass'/C_ADD_CLASS/g" -e "s/var VERSION/var C_ADD_CLASS = 'addClass'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/\.data(/[C_DATA](/g" -e "s/var VERSION/var C_DATA = 'data'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/\.attr(/[C_ATTR](/g" -e "s/var VERSION/var C_ATTR = 'attr'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'ui-/C_UI + '/g" -e "s/var C_SCROLL_TOP/var C_UI = 'ui-'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'icon-/C_ICON + '/g" -e "s/var VERSION/var C_ICON = 'icon-'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'\[data-role/C_ROLE + '/g" -e "s/var VERSION/var C_ROLE = '[data-role'; \0/" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/+ '' +/+/g" "$(RELEASE_PATH)/zoey.js"
 	@@uglifyjs -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' '$(RELEASE_PATH)/zoey.js'
 	@@cat '$(VENDOR_PATH)/zepto-$(ZEPTO_VERSION).js' '$(RELEASE_PATH)/zoey.js' | uglifyjs -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).bundle.min.js'
 	@@rm -f '$(RELEASE_PATH)/zoey.js'
