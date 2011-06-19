@@ -273,7 +273,7 @@ html {
   text-align: center;
   text-decoration: none;
 
-  &:active {
+  &.ui-pressed {
     @include background-image(linear-gradient(
       rgba(#000, opacity-level(50)),
       rgba(#000, opacity-level(25))
@@ -518,8 +518,7 @@ $widgets-list: false;
 }
 
 .ui-disabled,
-.ui-disabled:hover,
-.ui-disabled:active {
+.ui-disabled.ui-pressed {
   @include opacity(0.5 !important);
   @include text-shadow(none !important);
 }

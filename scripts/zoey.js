@@ -187,7 +187,13 @@ self.serialize = function(form) {
 };
 self.widgets = {
   page: function() {
-    this.delegate('a', 'click', function(event) {
+    this.delegate('.ui-button', 'touchstart', function(event) {
+      var $this = $(this);
+      var onTouchEnd = function() {
+        $this.unbind('touchend', onTouchEnd).removeClass('ui-pressed');
+      };
+      $this.addClass('ui-pressed').bind('touchend', onTouchEnd);
+    }).delegate('a', 'click', function(event) {
       var $this = $(this);
       if ($this.data('ajax') === 'false' || $this.attr('rel') === 'external') {
         return true;
