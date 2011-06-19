@@ -47,7 +47,6 @@ function uiRestoreScroll($page) {
   $page && setTimeout(function() {
     uiScrollTop($page.data('zoey:scroll-top') || 0);
     $page.removeAttr('data-zoey:scroll-top');
-    // DISABLED: self.updateLayout();
   }, 75);
 };
 self.loading = function(display) {
@@ -79,7 +78,6 @@ self.showPage = function($page, options) {
     $highlight.length && $highlight.removeClass('ui-highlight');
     $highlight = $page.find('[href="#' + id + '"]').addClass('ui-highlight');
     $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
-    // DISABLED: $page.reflow();
     uiRestoreScroll($page);
     $visiblePage = $page;
     $page.get(0).focus();
@@ -187,9 +185,6 @@ self.serialize = function(form) {
   }
   return data;
 };
-// DISABLED: $.fn.reflow = function() {
-// DISABLED:   this.find('[data-role="content"]').content();
-// DISABLED: };
 self.widgets = {
   page: function() {
     this.delegate('a', 'click', function(event) {
@@ -241,48 +236,14 @@ self.widgets = {
     $topPage || ($topPage = this);
     this.addClass('ui-collapsed');
   },
-  header: function() {
-    // DISABLED: if (this.data('position') === 'fixed') {
-    // DISABLED:   this.addClass('ui-fixed');
-    // DISABLED:   $fixedWidgets.push([this, this.parent('[data-role="page"]'), 'top']);
-    // DISABLED: }
-  },
   navigation: function() {
     var $children = this.children();
     $children.addClass('ui-size-' + String.fromCharCode(97 /* 'a' */ + $children.length - 1));
-  },
-  content: function() {
-    // DISABLED: var top = 0, bottom = 0;
-    // DISABLED: this.prev('[data-role="header"]').each(function() {
-    // DISABLED:   var $this = $(this);
-    // DISABLED:   if ($this.css('position') === 'absolute') {
-    // DISABLED:     top = top + $this.height();
-    // DISABLED:   }
-    // DISABLED: });
-    // DISABLED: this.next('[data-role="footer"]').each(function() {
-    // DISABLED:   var $this = $(this);
-    // DISABLED:   if ($this.css('position') === 'absolute') {
-    // DISABLED:     bottom = bottom + $this.height();
-    // DISABLED:   }
-    // DISABLED: });
-    // DISABLED: this.css({
-    // DISABLED:   'padding-top':    top    + 'px',
-    // DISABLED:   'padding-bottom': bottom + 'px'
-    // DISABLED: });
   },
   list: function() {
     this.children().each(function() {
       self.role(this, 'button');
     });
-    // DISABLED: var buttons = this.find('[data-role="button"]'),
-    // DISABLED:     split   = this.data('split-icon'),
-    // DISABLED:     icon    = this.data('icon');
-    // DISABLED: if (this.data('inset') === 'true') {
-    // DISABLED:   this.addClass('ui-inset');
-    // DISABLED: }
-    // DISABLED: if (split) {
-    // DISABLED:   buttons.addIcon(split);
-    // DISABLED: }
   },
   group: function() {
     var orientation = this.data('orientation');
@@ -310,14 +271,6 @@ self.widgets = {
         $first.removeClass('ui-icon-' + icons[1]).addClass('ui-icon-' + icons[0]);
       }
     });
-  },
-  footer: function() {
-    // DISABLED: if (this.data('position') === 'fixed') {
-    // DISABLED:   this.addClass('ui-fixed').css({ top: (window.innerHeight - this.height()) + 'px' });
-    // DISABLED:   $fixedWidgets.push([this, this.parent('[data-role="page"]'), 'bottom']);
-    // DISABLED: } else {
-    // DISABLED:   $fixedWidgets.push([this, this.parent('[data-role="page"]'), 'bottom-if-needed']);
-    // DISABLED: }
   }
 };
 self.role = function(element, role) {
@@ -325,7 +278,7 @@ self.role = function(element, role) {
   var block = self.widgets[role];
   $widget.hasClass('ui-' + role) || (block && block.call($widget));
   $widget.addClass('ui-widget ui-' + role);
-  ['theme', 'icon', 'icon-position', 'size', 'position'].forEach(function(type) {
+  ['theme', 'icon', 'icon-position', 'size'].forEach(function(type) {
     $widget.data(type) && $widget.addClass('ui-has-' + type + ' ui-' + type + '-' + $widget.data(type));
   });
   var themeRegExp = /\bui-theme-(\w+)\b/;
@@ -361,29 +314,6 @@ self.initialize = function(scope, options) {
         });
       }
     }).trigger('hashchange').bind('resize scroll orientationchange', function() {
-      // DISABLED: var top = uiScrollTop(), reflow = false;
-      // DISABLED: for (var i = 0; i < $fixedWidgets.length; i ++) {
-      // DISABLED:   var config = $fixedWidgets[i];
-      // DISABLED:   if (config[1].hasClass('ui-collapsed')) {
-      // DISABLED:     continue;
-      // DISABLED:   }
-      // DISABLED:   if (config[2] === 'top') {
-      // DISABLED:     config[0].css({ top: top + 'px' });
-      // DISABLED:   } else if (config[2] === 'bottom-if-needed') {
-      // DISABLED:     if (document.body.scrollHeight - 5 <= window.innerHeight) {
-      // DISABLED:       config[0].css({ position: 'absolute', bottom: '0px' });
-      // DISABLED:     } else {
-      // DISABLED:       config[0].css({ position: 'relative', bottom: 'auto' });
-      // DISABLED:     }
-      // DISABLED:     reflow = true;
-      // DISABLED:   } else {
-      // DISABLED:     config[0].css({ top: (top + window.innerHeight - config[0].height()) + 'px' });
-      // DISABLED:   }
-      // DISABLED: }
-      // DISABLED: hidden = false;
-      // DISABLED: if (reflow) {
-      // DISABLED:   $visiblePage.reflow();
-      // DISABLED: }
       $loading && $loading.css({
         width:  window.innerWidth + 'px',
         height: document.body.scrollHeight + 'px'
@@ -392,32 +322,6 @@ self.initialize = function(scope, options) {
         left: Math.round(window.innerWidth  / 2) + 'px'
       });
     });
-    // DISABLED: var hidden = false;
-    // DISABLED: $(window).bind('touchmove', function(event) {
-    // DISABLED:   if ( ! hidden) {
-    // DISABLED:     hidden = true;
-    // DISABLED:     for (var i = 0; i < $fixedWidgets.length; i ++) {
-    // DISABLED:       var config = $fixedWidgets[i];
-    // DISABLED:       if (config[1].hasClass('ui-collapsed')) {
-    // DISABLED:         continue;
-    // DISABLED:       }
-    // DISABLED:       if (config[2] === 'top') {
-    // DISABLED:         config[0].css({ top: '0px' });
-    // DISABLED:       } else if (config[2] === 'bottom-if-needed') {
-    // DISABLED:         if (document.body.scrollHeight > window.innerHeight) {
-    // DISABLED:           config[0].css({ position: 'relative', bottom: 'auto' });
-    // DISABLED:         }
-    // DISABLED:       } else {
-    // DISABLED:         config[0].css({ top: (document.body.scrollHeight - config[0].height()) + 'px' });
-    // DISABLED:       }
-    // DISABLED:     }
-    // DISABLED:   }
-    // DISABLED: });
-    // DISABLED: $(window).bind('touchend', function() {
-    // DISABLED:   if (hidden) {
-    // DISABLED:     self.updateLayout();
-    // DISABLED:   }
-    // DISABLED: });
     if ( ! window.onhashchange) {
       var last = location.hash;
       setInterval(function() {
