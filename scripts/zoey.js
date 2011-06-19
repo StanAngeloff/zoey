@@ -321,7 +321,7 @@ self.initialize = function(scope, options) {
         height: document.body.scrollHeight + 'px'
       }).children().css({
         top:  (uiScrollTop() + Math.round(height / 2)) + 'px',
-        left: Math.round(height  / 2) + 'px'
+        left: Math.round(width / 2) + 'px'
       });
     });
     if ( ! window.onhashchange) {
