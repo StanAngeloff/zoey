@@ -23,7 +23,7 @@
 &lt;body&gt;
 &lt;/body&gt;
 &lt;/html&gt;</pre>
-            <p>Every app consist of a series of pages. For example, a log in screen is a page:</p>
+            <p>Every app consist of a series of pages (e.g., a log in screen). To create a page:</p>
             <pre>&lt;!doctype html&gt;
 &lt;html lang=en&gt;
 &lt;body&gt;
@@ -32,6 +32,19 @@
 &lt;/body&gt;
 &lt;/html&gt;</pre>
             <p>Zoey relies on <code>data-*</code> attributes to create UI components and attach behaviour. <code>data-role</code> is a special attribute assigning a particular <em>role</em> to an element of the DOM.</p>
+            <h3>The Basics</h3>
+            <p>Let's go ahead and add a header and a footer to our app:</p>
+            <pre>&lt;!doctype html&gt;
+&lt;html lang=en&gt;
+&lt;body&gt;
+&lt;article data-role=page&gt;
+<strong>&lt;header data-role=header&gt;
+&lt;/header&gt;
+&lt;footer data-role=footer&gt;
+&lt;/footer&gt;</strong>
+&lt;/article&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
             <p>
                 <a href=index.html data-role=button data-icon=arrow-l>Table of Contents</a>
             </p>
