@@ -1,134 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang=en>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
-    <link rel="stylesheet" href="styles/zoey/default.css">
+    <title>Zoey</title>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
+    <link rel=stylesheet href=release/zoey-0.2.min.css>
 </head>
 <body>
 
-<article id="home" data-role="page">
-    <header data-role="header">
-        <h1>Zoey, a mobile framework</h1>
+<article id=home data-role=page>
+    <header data-role=header data-theme=b>
+        <h1 data-role=page-title>Zoey</h1>
     </header>
-    <div data-role="content">
-        <div class="ui-body ui-body-d">
-            <h2>What is Zoey?</h2>
-            <p>Zoey is a mobile framework on top on <a href="http://zeptojs.com/" rel="external">zepto.js</a> that aims to be small and fast.
-            <strong>The golder rule is</strong>: don't generate any extra markup and do everything through progressive enhancements and CSS.</p>
-            <p><a href="#demo" data-role="button" data-icon="arrow-r" data-iconpos="right">Demo</a></p>
-            <p><a href="index2.html" data-role="button" data-icon="arrow-r" data-iconpos="right">AJAX Navigation</a></p>
-            <h2>Why?</h2>
-            <p>Size matters. At least when it comes to mobile downloads. Zoey tries to keep it simple and weights at only <strong>9KB</strong> JavaScript + <strong>24KB</strong> CSS (no GZip).</p>
-            <p>For comparison, jQuery Mobile is <strong>60KB</strong> JavaScript + <strong>41KB</strong> CSS. This doesn't include the jQuery library which may or may not be available in the cache.</p>
-            <p>That's a few KBs off and a good improvement. To speed downloads even further, zepto.js (<strong>12KB</strong>) is used instead of the full-blown desktop version of jQuery (<strong>80KB</strong>).</p>
-            <h3>How does it add up?</h3>
-            <ul>
-                <li>Zoey &mdash; <strong>45KB</strong>, GZip: ~11.5KB</li>
-                <li>jQuery Mobile &mdash; <strong>181KB</strong>, GZip: ~56KB</li>
-            </ul>
-            <h2>Styling</h2>
-            <p>You want your application to be unique. This is why Zoey uses <a href="http://beta.compass-style.org/" rel="external">Compass</a> to allow you to easily customise the default theme.</p>
-            <p>By overriding predefined variables, you can produce a unique theme of your own. You can even go further and completely re-design the default one, it's entirely up to you.</p>
-            <h2>Platforms</h2>
-            <p>Zoey has been tested on modern mobile browsers and works on Android 2.1+ and iOS 4.2+. Earlier versions might be supported as well, but haven't been tested.</p>
-            <p>The default theme makes use of CSS3 goodies: multiple backgrounds, gradients, box sizing, etc. Some of these may not be available in previous Android/iOS builds.</p>
-            <h2>Help &amp; How-to</h2>
-            <p>Since this is an early release, documentation has not been finalised yet. You can refer to <a href="http://jquerymobile.com/test/docs/" rel="external">jQuery Mobile</a>'s documentation as it has been the primary source of inspiration for this project.</p>
-            <p>Poke around the <a href="https://github.com/StanAngeloff/zoey/blob/gh-pages/scripts/zoey.js" rel="external">source code</a> as well to find out what's supported.</p>
+    <div data-role=content>
+        <div data-role=panel data-theme=d>
+            <h2>What is it?</h2>
+            <p>Zoey is a lightweight framework for developing mobile apps. It is small, customisable and features a range of UI components.</p>
+            <h2>Overview</h2>
+            <p>Zoey is built on top of <a href=http://zeptojs.com rel=external>zepto.js</a> and weights at only <strong>21.6KB</strong> (combined JavaScript and CSS) and GZipp'ed at around <strong>6KB</strong>.</p>
+            <p>Zoey is designed around HTML5 and supports modern browsers (iOS 4.2 &amp; Android 2.2 tested). Using progressive enhancements and CSS3, no extra elements are added to the DOM.</p>
         </div>
-        <div class="ui-body ui-body-e">
-            <h2>Contribute</h2>
-            <p>Zoey is very much a work in progress (hence no official release yet).</p>
-            <p>You can help in a lot of ways: adding documentation, writing tests, performing code reviews, testing on different OSes and versions, opening issues, creating new themes and anything you reckon will benefit the project in general.</p>
+        <div data-role=panel data-theme=d>
+            <h2>Table of Contents</h2>
+            <ul data-role=list>
+                <li data-icon=arrow-r data-icon-position=right><a href=docs/10-usage.html>Usage</a></li>
+                <li data-icon=arrow-r data-icon-position=right><a href=demo.html>UI Components</a></li>
+            </ul>
         </div>
     </div>
-    <footer data-role="footer">
-        <ul class="ui-sitemap">
-            <li><a href="https://github.com/StanAngeloff/zoey" rel="external">Github page</a></li>
+    <footer data-role=footer>
+        <ul data-role=navigation>
+            <li><a href=https://github.com/StanAngeloff/zoey data-role=button rel=external>Fork on Github</a></li>
         </ul>
     </footer>
 </article>
 
-<article id="demo" data-role="page">
-    <header data-role="header">
-        <a href="#home" data-role="button" data-rel="back" data-icon="arrow-l" data-theme="b">Back</a>
-        <h1>Zoey, a mobile framework</h1>
-        <ul data-role="navbar">
-            <li><a href="#home" data-rel="back">Home</a></li>
-            <li><a href="#home" data-rel="back">News</a></li>
-            <li><a href="#home" data-rel="back">Account</a></li>
-        </ul>
-    </header>
-    <div data-role="content">
-        <div class="ui-body ui-body-d">
-            <h2>Buttons</h2>
-            <p><a href="#home" data-role="button" data-theme="a" data-rel="back">Swatch A</a></p>
-            <p><a href="#home" data-role="button" data-theme="b" data-rel="back">Swatch B</a></p>
-            <p><a href="#home" data-role="button" data-theme="c" data-rel="back">Swatch C</a></p>
-            <p><a href="#home" data-role="button" data-theme="d" data-rel="back">Swatch D</a></p>
-            <p><a href="#home" data-role="button" data-theme="e" data-rel="back">Swatch E</a></p>
-        </div>
-        <div class="ui-body ui-body-d">
-            <h2>Lists</h2>
-            <ul data-role="listview" data-inset="true">
-                <li data-icon="arrow-l"><a href="#home" data-rel="back">Github</a></li>
-                <li data-icon="arrow-l"><a href="#home" data-rel="back">Twitter</a></li>
-                <li data-icon="arrow-l"><a href="#home" data-rel="back">Gmail</a></li>
-                <li data-icon="arrow-l"><a href="#home" data-rel="back">YouTube</a></li>
-            </ul>
-        </div>
-        <div class="ui-body ui-body-d">
-            <h2>Control Groups</h2>
-            <ul data-role="controlgroup">
-                <li><a href="#home" data-role="button" data-theme="b" data-rel="back">Send Message</a></li>
-                <li><a href="#home" data-role="button" data-rel="back">Skip</a></li>
-            </ul>
-        </div>
-        <div class="ui-body ui-body-d">
-            <h2>Collapsible</h2>
-            <div class="ui-body ui-body-c" data-role="collapsible" data-collapsed="true">
-                <h2>Toggle me</h2>
-                <p>I am visible.</p>
-            </div>
-        </div>
-        <div class="ui-body ui-body-d">
-            <h2>Forms</h2>
-            <ol>
-                <li class="ui-fieldcontain">
-                    <label for="name">E-mail:</label>
-                    <input type="email" id="name">
-                </li>
-                <li class="ui-fieldcontain">
-                    <label for="name">Country:</label>
-                    <select>
-                        <option>United Kingdom</option>
-                        <option>United States</option>
-                    </select>
-                </li>
-                <li class="ui-fieldcontain">
-                    <ul data-role="controlgroup">
-                        <li data-role="button">
-                            <input type="radio" id="male" name="gender" value="m" checked>
-                            <label for="male">Male</label>
-                        </li>
-                        <li data-role="button">
-                            <input type="radio" id="female" name="gender" value="f">
-                            <label for="female">Female</label>
-                        </li>
-                    </ul>
-                </li>
-            </ol>
-        </div>
-    </div>
-    <footer data-role="footer">
-        <ul class="ui-sitemap">
-            <li><a href="https://github.com/StanAngeloff/zoey" rel="external">Github page</a></li>
-        </ul>
-    </footer>
-</article>
-
-<script src="scripts/zoey.bundle.js"></script>
+<script src=release/zoey-0.2.bundle.min.js></script>
 
 </body>
 </html>

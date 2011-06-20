@@ -1,0 +1,553 @@
+// USER CONFIGURABLE OPTIONS (adjust to your liking) -------------------------
+
+$base-colors:        #000 #5780d8 #ccc #fff #fd4 !default;
+$base-font-size:     16px !default;
+$base-font-family:   'Trebuchet MS', TrebuchetMS, sans-serif !default;
+$base-opacity-scale: 1 !default;
+
+// DEFAULT OPTIONS (you wouldn't normally change these) ----------------------
+
+$default-darkness-threshold: 60% !default;
+$default-shadow-widgets: page-title button !default;
+$default-header-padding: 8px !default;
+$default-body-padding: 10px !default;
+$default-icon-size: 16px !default;
+$default-icons: arrow-r arrow-d arrow-l !default;
+$default-highlight-color: nth($base-colors, 2) !default;
+
+// PREREQUISITES -------------------------------------------------------------
+
+@import 'compass';
+@import 'compass/layout/grid-background';
+@import 'blueprint';
+
+$experimental-support-for-opera:     false;
+$experimental-support-for-microsoft: false;
+$experimental-support-for-khtml:     false;
+$legacy-support-for-ie6:             false;
+$legacy-support-for-ie7:             false;
+$legacy-support-for-ie8:             false;
+
+$blueprint-font-family: $base-font-family;
+$blueprint-font-size:   $base-font-size;
+
+@include global-reset;
+@include establish-baseline;
+
+$icons: sprite-map('icons/*.png', $spacing: $default-icon-size * 8);
+
+// FUNCTIONS -----------------------------------------------------------------
+
+@function letter($index) {
+  $letters: a b c d e f g h i j k l m n o p q r s t u v w x y z;
+  @return nth($letters, $index);
+}
+
+@function clamp($value, $min, $max) {
+  @return if($value > $max, $max, if($value < $min, $min, $value));
+}
+
+@function opacity-level($level) {
+  @return clamp(($base-opacity-scale * $level) / 100, 0, 1);
+}
+
+@function threshold($index) {
+  @return (lightness(nth($base-colors, $index)) >= $default-darkness-threshold);
+}
+
+@function themes($type, $before: '.ui-theme-', $after: '') {
+  $list: false;
+  @for $index from 1 through length($base-colors) {
+    $accept: false;
+    @if threshold($index) {
+      $accept: if($type == 'light', true, false);
+    } @else {
+      $accept: if($type == 'dark', true, false);
+    }
+    @if $accept {
+      $append: unquote($before + letter($index) + $after);
+      $list: if($list, join($list, $append, comma), $append);
+    }
+  }
+  @return if($list, $list, unquote($before + 'none' + $after));
+}
+
+// GENERAL -------------------------------------------------------------------
+
+html {
+  * {
+    @include adjust-font-size-to($base-font-size);
+    font-family: $base-font-family;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: rgba(#000, 0);
+    -webkit-text-size-adjust: none;
+    -webkit-user-drag: none;
+
+    &, &:focus { outline: none; }
+  }
+}
+
+@-webkit-keyframes uiDelayedFadeIn {
+  0%   { @include opacity(0.01); }
+  50%  { @include opacity(0.01); }
+  100% { @include opacity(1); }
+}
+
+@-webkit-keyframes uiSpin {
+  0%   { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+.ui-loading {
+  cursor: wait;
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  background-color: rgba(#000, 0.5);
+  -webkit-animation-name: uiDelayedFadeIn;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+
+  .ui-spinner {
+    $image: 'background-loading.png';
+    $size: image-width($image);
+    background: transparent image-url($image) no-repeat 0 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -$size / 2;
+    margin-top: -$size / 2;
+    width: $size;
+    height: $size;
+    -webkit-animation-name: uiSpin;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }
+}
+
+// WIDGETS -------------------------------------------------------------------
+
+.ui-header {
+  @include clearfix;
+  background: transparent none repeat-x 0 0;
+  @include background-image(linear-gradient(
+    rgba(#fff, opacity-level(25))   0%,
+    rgba(#fff, 0)                  50%,
+    rgba(#000, 0)                  50%,
+    rgba(#000, opacity-level(10)) 100%
+  ));
+  border-bottom: 1px solid rgba(#000, opacity-level(10));
+  position: relative;
+  z-index: 100;
+}
+
+.ui-page-title {
+  font-weight: bold;
+  text-align: center;
+  padding: $default-header-padding ($default-header-padding / 2);
+}
+
+.ui-navigation {
+  @include clearfix;
+  width: 100%;
+
+  & > * {
+    float: left;
+    display: block;
+
+    & > .ui-button {
+      border-right-width: 0;
+      @include border-radius(0);
+    }
+
+    &:last-child > .ui-button { border-right-width: 1px; }
+
+    .ui-header > &,
+    .ui-footer > & {
+      &             > .ui-button { border-bottom: none; }
+      &:first-child > .ui-button { border-left:   none; }
+      &:last-child  > .ui-button { border-right:  none; }
+    }
+
+    .ui-content &:first-child > .ui-button { @include border-radius(8px 0 0 8px); }
+    .ui-content &:last-child  > .ui-button { @include border-radius(0 8px 8px 0); }
+  }
+
+  .ui-header > & { margin-bottom: -1px; }
+  .ui-footer > & { margin-top:    -1px; }
+}
+
+.ui-group {
+  @include border-radius(8px);
+  @include clearfix;
+  width: 100%;
+
+  &.ui-orientation-horizontal > * {
+    float: left;
+    display: block;
+
+    &.ui-button, & > .ui-button {
+      border-right-width: 0;
+      @include border-radius(0);
+    }
+
+    &.ui-button:first-child, &:first-child > .ui-button { @include border-radius(8px 0 0 8px); }
+    &.ui-button:last-child,  &:last-child  > .ui-button {
+      border-right-width: 1px;
+      @include border-radius(0 8px 8px 0);
+    }
+  }
+
+  &.ui-orientation-vertical > * {
+
+    &.ui-button, & > .ui-button {
+      border-bottom-width: 0;
+      border-top-width: 0;
+      @include border-radius(0);
+    }
+
+    &.ui-button:first-child, &:first-child > .ui-button {
+      border-top-width: 1px;
+      @include border-radius(8px 8px 0 0);
+    }
+    &.ui-button:last-child,  &:last-child  > .ui-button {
+      border-bottom-width: 1px;
+      @include border-radius(0 0 8px 8px);
+    }
+  }
+}
+
+.ui-list {
+  @include border-radius(8px);
+
+  & > .ui-button {
+    border-bottom-width: 0;
+    border-top-width: 0;
+    @include border-radius(0);
+  }
+
+  & > .ui-button:first-child {
+    border-top-width: 1px;
+    @include border-radius(8px 8px 0 0);
+  }
+  & > .ui-button:last-child {
+    border-bottom-width: 1px;
+    @include border-radius(0 0 8px 8px);
+  }
+
+  .ui-content > & {
+    &, & > .ui-button {
+      @include border-radius(0);
+      border-left: none;
+      border-right: none;
+    }
+    & > .ui-button:first-child { border-top:    none; }
+    & > .ui-button:last-child  { border-bottom: none; }
+  }
+}
+
+.ui-button {
+  $button-height: rhythm() * 1.5;
+  display: block;
+  @include ellipsis;
+  @include box-sizing(border-box);
+  height: $button-height;
+  line-height: $button-height - 0.2em;
+  @include background-image(linear-gradient(
+    rgba(#fff, opacity-level(10))   0%,
+    rgba(#000, opacity-level(10)) 100%
+  ));
+  @include box-shadow(
+    inset 0  1px 1px rgba(#fff, opacity-level(50)),
+    inset 0 -1px 1px rgba(#000, opacity-level(50))
+  );
+  border: 1px solid rgba(#000, opacity-level(25));
+  @include border-radius(8px);
+  color: inherit;
+  cursor: pointer;
+  padding-left: $default-body-padding;
+  padding-right: $default-body-padding;
+  text-align: center;
+  text-decoration: none;
+
+  &.ui-pressed {
+    @include background-image(linear-gradient(
+      rgba(#000, opacity-level(50)),
+      rgba(#000, opacity-level(25))
+    ));
+    @include box-shadow(
+      inset 0  1px 1px rgba(#fff, opacity-level(25)),
+      inset 0 -1px 1px rgba(#000, opacity-level(25))
+    );
+    border-color: rgba(#000, opacity-level(50));
+  }
+
+  & > a { text-decoration: none !important; }
+  #{themes(dark,  '&.ui-inherit-theme-', '> a')} { color: #fff !important; }
+  #{themes(light, '&.ui-inherit-theme-', '> a')} { color: #000 !important; }
+
+  * { margin: 0; }
+
+  .ui-header > & {
+    @extend .ui-inline;
+    float: left;
+    margin: $default-header-padding ($default-header-padding / 2);
+
+    &.ui-align-right { float: right; }
+  }
+}
+
+.ui-content {
+  $not-widgets: ':not(.ui-widget)';
+  /* Compass, an open-source CSS Authoring Framework
+     (c) Christopher M. Eppstein
+     http://compass-style.org */
+  #{headers(all)} { font-weight: normal; text-align: center; }
+  h1 { @include adjust-font-size-to($base-font-size * 2); }
+  h2 { @include adjust-font-size-to($base-font-size * 1.8); }
+  h3 { @include adjust-font-size-to($base-font-size * 1.6); }
+  h4 { @include adjust-font-size-to($base-font-size * 1.4); }
+  h5 { @include adjust-font-size-to($base-font-size * 1.2); }
+  h6 { font-weight: bold; }
+  p  { margin: 0 0 $default-body-padding; }
+  a#{$not-widgets}  { text-decoration: underline; @include link-colors($link-color, $link-hover-color, $link-active-color, $link-visited-color, $link-focus-color); }
+  blockquote        { margin: $default-body-padding; color: $alt-text-color; font-style: italic; }
+  strong, dfn       { font-weight: bold; }
+  em, dfn           { font-style: italic; }
+  sup, sub          { line-height: 0; }
+  abbr, acronym     { border-bottom: 1px dotted #666666; }
+  address           { margin: 0 0 $default-body-padding; font-style: italic; }
+  del               { color: $alt-text-color; }
+  pre               { margin: $default-body-padding 0; white-space: pre; }
+  pre, code, tt     { @include fixed-width-text; }
+  li ul#{$not-widgets},
+  li ol             { margin: 0; }
+  ul#{$not-widgets},
+  ol#{$not-widgets} { margin: 0 $default-body-padding $default-body-padding 0; padding-left: $default-body-padding * 2; }
+  ul#{$not-widgets} { list-style-type: disc; }
+  ol#{$not-widgets} { list-style-type: decimal; }
+  dl                { margin: 0 0 $default-body-padding 0;
+    dt              { font-weight: bold; }
+    dd              { margin-left: $default-body-padding; } }
+  table             { margin-bottom: $default-body-padding; width: 100%; }
+  th                { font-weight: bold; }
+  thead th          { background: $blueprint-table-header-color; }
+  th, td, caption   { padding: 4px 10px 4px 5px; }
+  tfoot             { font-style: italic; }
+  caption           { background: $blueprint-background-color; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    $box-height: rhythm() * 1.25;
+    background-color: #fff;
+    border: 1px solid rgba(#000, opacity-level(25));
+    @include border-radius(4px);
+    color: #000;
+    margin: 0;
+    height: $box-height;
+    line-height: $box-height - 0.2em;
+    padding: 2px 5px;
+    display: block;
+    width: 100%;
+    @include box-sizing(border-box);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    @include box-shadow(inset 0 1px 2px rgba(#000, opacity-level(25)));
+    -webkit-appearance: none;
+
+    &:focus {
+      outline: none;
+      @include box-shadow(
+        inset 0 1px 2px rgba(#fff, opacity-level(10)),
+        0 0 8px rgba($default-highlight-color, opacity-level(75))
+      );
+      border-color: rgba(#000, opacity-level(50));
+    }
+  }
+
+  select {
+    background: sprite($icons, 'arrow-d-dark', 5px, 8px) no-repeat;
+    padding-left: 5px + $default-icon-size + 5px;
+  }
+}
+
+.ui-field {
+  list-style-type: none;
+  margin-left: $default-body-padding * -2;
+  margin-right: $default-body-padding * -1;
+  margin-bottom: $default-body-padding;
+}
+
+.ui-panel {
+  @include border-radius(10px);
+  padding: $default-body-padding;
+  margin: $default-body-padding;
+  border: 1px solid rgba(#000, opacity-level(25));
+  @include background-image(linear-gradient(
+    rgba(#fff, opacity-level(50)) 0%,
+    rgba(#fff, 0)                50%
+  ));
+
+  .ui-panel {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.ui-collapsible {
+  $negative-margin: (($default-body-padding + 1) * -1);
+
+  &.ui-closed {
+    * { @extend .ui-collapsed; }
+
+    & > .ui-button {
+      display: block !important;
+      visibility: visible !important;
+    }
+  }
+
+  &:not(.ui-closed) > .ui-button { border-bottom: none; }
+
+  &.ui-panel {
+    & > .ui-button { margin: $negative-margin $negative-margin $default-body-padding $negative-margin; }
+
+    & > *:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    &.ui-closed > .ui-button { margin-bottom: $negative-margin; }
+  }
+
+  & > .ui-button + .ui-panel {
+    @include border-radius(0 0 10px 10px);
+    border-top: none;
+    margin-top: $negative-margin;
+    padding-top: $default-body-padding * 2;
+
+    & > *:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.ui-footer {
+  @include background-image(linear-gradient(
+    rgba(#fff, opacity-level(25)) 0%,
+    rgba(#fff, 0)                50%
+  ));
+  border-top: 1px solid rgba(#000, opacity-level(10));
+  position: relative;
+  z-index: 100;
+}
+
+// SHADOWS -------------------------------------------------------------------
+
+$widgets-list: false;
+@each $widget in $default-shadow-widgets {
+  $append: #{themes(dark, '.ui-inherit-theme-', '.ui-#{$widget}')};
+  $widgets-list: if($widgets-list, join($widgets-list, $append, comma), $append);
+}
+
+@if ($widgets-list) {
+  #{$widgets-list} { @include text-shadow(0 1px 1px #000); }
+}
+
+$widgets-list: false;
+@each $widget in $default-shadow-widgets {
+  $append: #{themes(light, '.ui-inherit-theme-', '.ui-#{$widget}')};
+  $widgets-list: if($widgets-list, join($widgets-list, $append, comma), $append);
+}
+
+@if ($widgets-list) {
+  #{$widgets-list} { @include text-shadow(0 1px 1px #fff); }
+}
+
+// ICONS ---------------------------------------------------------------------
+
+.ui-has-icon {
+  position: relative;
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: $default-icon-size;
+    height: $default-icon-size;
+    margin-top: $default-icon-size / 2 * -1;
+    top: 50%;
+    left: $default-body-padding;
+  }
+}
+
+.ui-has-icon:not(.ui-icon-position-right) { padding-left:  $default-body-padding * 2 + $default-icon-size; }
+.ui-has-icon.ui-icon-position-right {
+  padding-right: $default-body-padding * 2 + $default-icon-size;
+  &:before {
+    left: auto;
+    right: $default-body-padding;
+  }
+}
+
+@each $icon in $default-icons {
+  #{themes(dark,  '.ui-inherit-theme-', '.ui-icon-#{$icon}:before')} { background: sprite($icons, '#{$icon}-light'); }
+  #{themes(light, '.ui-inherit-theme-', '.ui-icon-#{$icon}:before')} { background: sprite($icons, '#{$icon}-dark'); }
+}
+
+// GENERAL -------------------------------------------------------------------
+
+.ui-collapsed {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.ui-disabled,
+.ui-disabled.ui-pressed {
+  @include opacity(0.5 !important);
+  @include text-shadow(none !important);
+}
+
+.ui-inline {
+  @include inline-block;
+  vertical-align: top;
+}
+
+.ui-grid      { display: table; }
+.ui-grid-row  { display: table-row; }
+.ui-grid-cell { display: table-cell; }
+
+@for $index from 1 through 10 {
+  .ui-size-#{letter($index)} { width: (100% / $index); }
+}
+
+// THEMES --------------------------------------------------------------------
+
+@for $index from 1 through length($base-colors) {
+  $base-color: nth($base-colors, $index);
+
+  .ui-theme-#{letter($index)} { background-color: $base-color; }
+  @if threshold($index) {
+    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#000, $base-color, 10%); }
+  } @else {
+    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#fff, $base-color, 10%); }
+  }
+
+  #{themes(dark)}  { color: #fff; }
+  #{themes(light)} { color: #000; }
+}
