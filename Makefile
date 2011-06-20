@@ -35,6 +35,7 @@ styles:
 	@@java -jar _assets/yuicompressor-2.4.6.jar --type css --charset utf8 -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' 'styles/zoey.css'
 	@@mkdir -p '$(RELEASE_PATH)/images'
 	@@cp -f 'styles/images/'*.png '$(RELEASE_PATH)/images/'
+	@@find '$(RELEASE_PATH)/images' -type f -name '*.png' -exec optipng -o7 {} &>/dev/null \;
 
 minify:
 	@@echo 'Minifying bundle...'
