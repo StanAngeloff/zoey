@@ -1,4 +1,4 @@
-(function() {
+(function(window, document, location) {
 /**
  * The MIT License
  *
@@ -22,152 +22,151 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-var $first     = null,
-    $visible   = null,
-    $highlight = [],
-    $cache     = {},
-    $previous  = null,
-    hash       = null,
-    sequence   = 0;
-$.mobile || ($.mobile = {});
-$.mobile.scrollTop = function uiScrollTop(offset) {
-  if (typeof (offset) === 'undefined') {
+var VERSION = '0.2';
+var self = this;
+var $loading;
+var $topPage;
+var $visiblePage;
+var $hiddenPage;
+var $cachedPages = {};
+var $highlight = [];
+var pageSequence = 0;
+var pageHash;
+var $fixedWidgets = [];
+function uiScrollTop(offset) {
+  if (arguments.length) {
+    document.body.scrollTop = document.documentElement.scrollTop = window.pageYOffset = offset;
+  } else {
     return (document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset);
-  } else {
-    document.body.scrollTop =
-    document.documentElement.scrollTop =
-    window.pageYOffset = offset;
-    return $.mobile;
   }
 };
-$.mobile.loading = function uiLoading(flag) {
-  var $loading;
-  $('#loading').remove();
-  if (flag) {
-    $loading = $(document.createElement('div')).attr({ id: 'loading' }).addClass('ui-loading');
-    $loading.append($(document.createElement('div')).addClass('ui-spinner'));
-    $(document.body).append($loading);
-    $(window).trigger('resize');
-  }
-  return $.mobile;
+function uiPersistScroll($page) {
+  $page && ($page.data('zoey:scroll-top') === undefined) && $page.data('zoey:scroll-top', uiScrollTop());
 };
-$.mobile.showPage = function uiShowPage(page, options) {
-  var id = '#' + page.attr('id');
-  options || (options = {});
-  if ($previous && $previous.attr('id') !== page.attr('id')) {
-    $previous.trigger('pagebeforehide').trigger('pagehide');
-  }
-  if (options.type === 'dialog') {
-    $previous = $visible;
-    if ($visible) {
-      $visible.data('mobile:scrollTop', $.mobile.scrollTop()).addClass('collapsed');
+function uiRestoreScroll($page) {
+  $page && setTimeout(function() {
+    uiScrollTop($page.data('zoey:scroll-top') || 0);
+    $page.removeAttr('data-zoey:scroll-top');
+  }, 75);
+};
+self.loading = function(display) {
+  if (display) {
+    if ( ! $loading) {
+      $loading = $('<div>').addClass('ui-loading').append($('<div>').addClass('ui-spinner'));
+      $(document.body).append($loading);
+      $(window).trigger('resize');
     }
   } else {
-    $previous = null;
-    if ($visible) {
-      $visible.data('mobile:scrollTop', $.mobile.scrollTop()).trigger('pagebeforehide').addClass('collapsed').trigger('pagehide');
-    }
+    $loading && $loading.remove();
+    $loading = null;
   }
-  if ($highlight.length) {
-    $highlight.removeClass('highlight');
-  }
-  $visible = page.trigger('pagebeforeshow').removeClass('collapsed').trigger('pageshow');
-  $visible.reflow();
-  $highlight = $visible.find('[href="' + id + '"]').addClass('highlight');
-  options.event && options.event.stopPropagation();
-  setTimeout(function() {
-    $.mobile.scrollTop($visible.data('mobile:scrollTop') || 0);
-    $.mobile.updateLayout();
-  }, 25);
-  page.get(0).focus();
-  return $.mobile;
 };
-$.mobile.changePage = function uiChangePage(options) {
-  var page = null, found = false;
+self.showPage = function($page, options) {
+  var id = $page.attr('id');
+  if ( ! $visiblePage || $visiblePage.attr('id') !== id) {
+    options || (options = {});
+    options.event && options.event.stopPropagation();
+    ($hiddenPage && $hiddenPage.attr('id') !== id) && $hiddenPage.trigger('pagebeforehide').trigger('pagehide');
+    uiPersistScroll($visiblePage);
+    if (options.type === 'dialog') {
+      $hiddenPage = $visiblePage;
+      $visiblePage && $visiblePage.addClass('ui-collapsed');
+    } else {
+      $hiddenPage = null;
+      $visiblePage && $visiblePage.trigger('pagebeforehide').addClass('ui-collapsed').trigger('pagehide');
+    }
+    $highlight.length && $highlight.removeClass('ui-highlight');
+    $highlight = $page.find('[href="#' + id + '"]').addClass('ui-highlight');
+    $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
+    uiRestoreScroll($page);
+    $visiblePage = $page;
+    $page.get(0).focus();
+  }
+};
+self.createPages = function(html, options) {
+  var $result = $('<div>').html(html);
+  var $pages = $result.find('[data-role="page"]');
+  var target = options.target;
+  var id;
+  $pages.length || ($pages = $('<div>'));
+  if ($cachedPages[target]) {
+    $cachedPages[target].remove();
+    delete $cachedPages[target];
+  }
+  for (var i = 0, length = $pages.length, $page; $page = $($pages.get(i)), i < length; i ++) {
+    id = $page.attr('id');
+    if ( ! id || $('#' + id).length) {
+      $page.attr({ id: 'page-' + (++ pageSequence) });
+    }
+    self.role($page, 'page');
+    if ($page.data('cache') === 'true') {
+      $cachedPages[target] = $page;
+    } else {
+      (function($this) {
+        $this.bind('pagehide', function() {
+          $this.remove();
+        });
+      })($page);
+    }
+    self.initialize($page, options);
+    $(document.body).append($page);
+  }
+  self.loading(false);
+  self.changePage($.extend(options, { target: $pages.first() }));
+  if (options.type !== 'dialog') {
+    pageHash = target;
+    location.hash = pageHash;
+  }
+};
+self.changePage = function(options) {
+  var $page;
   options || (options = {});
   if (typeof (options.target) === 'string') {
-    var $pages = $('[data-role="page"]');
     options.target = options.target.replace(/^#/, '');
-    for (var i = 0; i < $pages.length; i ++) {
-      var $this = $($pages.get(i));
-      if ($this.attr('id') === options.target) {
-        found = true;
-        if ($this.hasClass('collapsed')) {
-          page = $this;
-          hash = options.target;
-          break;
-        }
+    $('[data-role="page"]').each(function() {
+      if ($(this).attr('id') === options.target) {
+        $page = $(this);
+        pageHash = options.target;
       }
-    }
-    if ( ! found) {
-      if ($cache[options.target] && options.method !== 'POST') {
-        $.mobile.changePage($.extend(options, { target: $cache[options.target] }));
+    });
+    if ( ! $page) {
+      if ($cachedPages[options.target] && options.method !== 'POST') {
+        self.changePage($.extend(options, { target: $cachedPages[options.target] }));
       } else {
-        $.mobile.loading(true);
+        self.loading(true);
         $.ajax({
           dataType: 'html',
           data:     options.data,
           type:     (options.method && options.method.toUpperCase()) || 'GET',
-          cache:    false,
           url:      options.target,
           success:  function(html, code, xhr) {
-            var $result = $(document.createElement('div')).html(html),
-                $page   = $result.find('[data-role="page"]'),
-                target  = options.target, id;
-            if ( ! $page.length) {
-              $page = $(document.createElement('div'));
-            }
-            if ($cache[target]) {
-              $cache[target].remove();
-              delete $cache[target];
-            }
-            id = $page.attr('id');
-            if (id && $('#' + id).length) {
-              $page.attr({ id: 'page-' + (++ sequence) });
-            }
-            $page.page();
-            if ($page.data('cache') === 'true') {
-              $cache[target] = $page;
-            } else {
-              $page.bind('pagehide', function() {
-                $page.remove();
-              });
-            }
-            $.mobile.initialize($page);
-            $(document.body).append($page);
-            $.mobile.loading(false);
-            $.mobile.changePage($.extend(options, { target: $page }));
-            if (options.type !== 'dialog') {
-              hash = target;
-              location.hash = hash;
-            }
+            self.createPages(html, options);
           },
           error: function(xhr, code, exception) {
-            $.mobile.loading(false);
+            self.loading(false);
             alert('Whoops! We failed to load the requested page from the server. Please make sure you are connected to the internet and try again.\n\n[' + xhr.status + '] ' + (exception || xhr.statusText));
           }
         });
       }
     }
   } else {
-    ($visible === options.target) || (page = options.target);
+    $page = options.target;
   }
-  if (page) {
-    $.mobile.showPage(page, options);
+  if ($page) {
+    self.showPage($page, options);
   } else {
     options.event && options.event.preventDefault();
   }
-  return $.mobile;
 };
-$.mobile.closeDialog = function uiCloseDialog() {
-  $.mobile.changePage({
-    target: $previous
+self.closeDialog = function() {
+  self.changePage({
+    target: $hiddenPage
   });
 }
-$.mobile.serialize = function serialize(form) {
+self.serialize = function(form) {
   var data = {};
-  for (var i = 0; i < form.elements.length; i ++) {
-    var element = form.elements[i];
+  var normalize = function(element) { return (element.value || '').replace(/\r\n|\r|\n/g, '\n'); };
+  for (var i = 0, element; element = form.elements[i], i < form.elements.length; i ++) {
     if (element.name && ! element.disabled) {
       if (element.tagName === 'SELECT') {
         data[element.name] = element.options[element.selectedIndex].value;
@@ -177,315 +176,173 @@ $.mobile.serialize = function serialize(form) {
             data[element.name] = (element.value || 'on');
           }
         } else {
-          data[element.name] = (element.value || '').replace(/\r\n|\r|\n/g, '\n');
+          data[element.name] = normalize(element);
         }
       } else if (element.tagName === 'TEXTAREA') {
-        data[element.name] = (element.value || '').replace(/\r\n|\r|\n/g, '\n');
+        data[element.name] = normalize(element);
       }
     }
   }
   return data;
 };
-$.fn.addTheme = function uiAddTheme(theme, inherit, propagate) {
-  inherit   && (inherit   = this.parent('[data-theme]').data('theme'));
-  propagate && (propagate = this.find('[data-role]:not([data-theme])'));
-  for (var i = 0; i < this.length; i ++) {
-    var element = $(this.get(i));
-    if ( ! (element.attr('class') || '').match(/\btheme-\w/)) {
-      var local = (element.data('theme') || inherit || theme);
-      element.addClass('theme-' + local);
-      propagate && propagate.each(function() {
-        $(this).addClass('theme-' + local);
-      });
-    }
-  }
-  return this;
-};
-$.fn.addIcon = function uiAddIcon(icon) {
-  for (var i = 0; i < this.length; i ++) {
-    var element = $(this.get(i));
-    if ( ! (element.attr('class') || '').match(/\bicon-\w+/)) {
-      var local = (element.data('icon') || icon);
-      if (local) {
-        element.addClass('ui-icon ui-icon-' + local);
+self.widgets = {
+  page: function() {
+    this.delegate('.ui-button', 'touchstart', function(event) {
+      var $this = $(this);
+      var onTouchEnd = function() {
+        $this.unbind('touchend', onTouchEnd).removeClass('ui-pressed');
+      };
+      $this.addClass('ui-pressed').bind('touchend', onTouchEnd);
+    }).delegate('a', 'click', function(event) {
+      var $this = $(this);
+      if ($this.data('ajax') === 'false' || $this.attr('rel') === 'external') {
+        return true;
       }
-    }
-  }
-  return this;
-};
-$.fn.reflow = function uiReflow() {
-  this.find('[data-role="content"]').content();
-  return this;
-};
-$.fn.none = function uiNone() {};
-$.fn.page = function uiPage() {
-  if (this.hasClass('ui-page')) {
-    return this;
-  }
-  this.addClass('ui-page');
-  this.delegate('a', 'click', function(event) {
-    var $this = $(this);
-    if ($this.data('ajax') === 'false' || $this.data('role') === 'none' || $this.attr('rel') === 'external') {
-      return false;
-    }
-    if ($this.hasClass('ui-disabled')) {
-      event.preventDefault();
-      event.stopPropagation();
-      return false;
-    }
-    this.blur();
-    var type = $this.data('rel'),
-        href = $this.attr('href');
-    if (href.indexOf('mailto:') === 0 || href.indexOf('sms:') === 0) {
-      return false;
-    }
-    if (type === 'back') {
-      if ($previous) {
-        $.mobile.closeDialog();
+      if ($this.hasClass('ui-disabled')) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
+      var href = $this.attr('href');
+      if (href.indexOf('mailto:') === 0 || href.indexOf('sms:') === 0) {
+        return true;
+      }
+      var type = $this.data('rel');
+      if (type === 'back') {
+        if ($hiddenPage) {
+          self.closeDialog();
+        } else {
+          uiPersistScroll($visiblePage);
+          history.back();
+        }
+        event.preventDefault();
       } else {
-        history.back();
+        self.changePage({
+          event:  event,
+          target: href,
+          type:   type
+        });
       }
-      event.preventDefault();
-    } else {
-      $.mobile.changePage({
+    }).delegate('.ui-button:not(a)', 'click', function(event) {
+      (this === event.target) && $(this).children('a').trigger('click', event);
+    }).delegate('form', 'submit', function(event) {
+      var $this = $(this);
+      if ($this.data('ajax') === 'false') {
+        return true;
+      }
+      var type = $this.data('rel');
+      self.changePage({
         event:  event,
-        target: $this.attr('href'),
+        target: $this.attr('action'),
+        method: $this.attr('method'),
+        data:   self.serialize(this),
         type:   type
       });
-    }
-  });
-  this.delegate('form', 'submit', function(event) {
-    var $this = $(this);
-    if ($this.data('ajax') === 'false' || $this.data('role') === 'none') {
-      return false;
-    }
-    var type = $this.data('rel');
-    $.mobile.changePage({
-      event:  event,
-      target: $this.attr('action'),
-      method: $this.attr('method'),
-      data:   $.mobile.serialize(this),
-      type:   type
     });
-  });
-  if ( ! $first) {
-    $first = this;
-  }
-  this.addClass('collapsed');
-  return this;
-};
-var $fixed = [];
-$.fn.header = function uiHeader() {
-  this.addClass('ui-header').addTheme('a', false, true);
-  if (this.data('position') === 'fixed') {
-    this.addClass('ui-fixed');
-    $fixed.push([this, this.parent('[data-role="page"]'), 'top']);
-  }
-  return this;
-};
-$.fn.navbar = function uiNavbar() {
-  this.addClass('ui-navbar').addTheme('a', true).find('a').addIcon();
-  var $children = this.find('li')
-  $children.css({ width: (100 / $children.length) + '%' });
-  return this;
-};
-$.fn.content = function uiContent() {
-  this.addClass('ui-content').addTheme('c');
-  var top = 0, bottom = 0;
-  this.prev('[data-role="header"]').each(function() {
-    var $this = $(this);
-    if ($this.css('position') === 'absolute') {
-      top = top + $this.height();
-    }
-  });
-  this.next('[data-role="footer"]').each(function() {
-    var $this = $(this);
-    if ($this.css('position') === 'absolute') {
-      bottom = bottom + $this.height();
-    }
-  });
-  this.css({
-    'padding-top':    top    + 'px',
-    'padding-bottom': bottom + 'px'
-  });
-  return this;
-};
-$.fn.fieldcontain = function uiFieldContain() {
-  this.addClass('ui-field-contain');
-  return this;
-};
-$.fn.listview = function uiListView() {
-  var buttons = this.find('[data-role="button"]'),
-      split   = this.data('split-icon'),
-      icon    = this.data('icon');
-  this.addClass('ui-list-view').addClass('align-' + (this.data('iconpos') || 'right')).addTheme('d', true, false);
-  if (this.data('inset') === 'true') {
-    this.addClass('ui-inset');
-  }
-  buttons.addTheme('d', false, false);
-  if (split) {
-    buttons.addIcon(split);
-  }
-  this.find('li').each(function() {
-    var $this = $(this), children = $this.children();
-    $this.addIcon(icon);
-    if (children.length && children[0].tagName === 'A') {
-      $(children[0]).addClass('ui-a-block');
-      $this.addClass('ui-li-block');
-    }
-  });
-  return this;
-};
-$.fn['list-divider'] = function uiListDivider() {
-  this.addClass('ui-list-divider').addTheme('b', false);
-  return this;
-};
-$.fn.controlgroup = function uiControlGroup() {
-  var $children, type = this.data('type');
-  this.addClass('ui-control-group').addClass('orientation-' + (type || 'horizontal')).addTheme('d', true, true);
-  if (type !== 'vertical') {
-    $children = this.children();
-    $children.css({ width: (100 / $children.length) + '%' });
-  }
-  $children = this.find('input');
-  if ($children.length) {
-    var self = this;
+    $topPage || ($topPage = this);
+    this.addClass('ui-collapsed');
+  },
+  navigation: function() {
+    var $children = this.children();
+    $children.addClass('ui-size-' + String.fromCharCode(97 /* 'a' */ + $children.length - 1));
+  },
+  list: function() {
+    this.children().each(function() {
+      self.role(this, 'button');
+    });
+  },
+  group: function() {
+    var orientation = this.data('orientation');
+    this.addClass('ui-orientation-' + (orientation || 'horizontal'));
+    (orientation === 'vertical') || self.widgets.navigation.call(this);
+    var $children = this.find('input');
     this.delegate('input', 'change', function() {
       $children.each(function() {
-        $(this).closest('[data-role="button"]')[this.checked ? 'addClass' : 'removeClass']('highlight');
+        $(this).closest('[data-role]')[this.checked ? 'addClass' : 'removeClass']('ui-highlight');
       });
     });
     $children.first().trigger('change');
-  }
-  return this;
-};
-$.fn.button = function uiButton() {
-  this.addClass('ui-button').addTheme('b', true, false).addIcon().addClass('icon-' + (this.data('iconpos') || 'left'));
-  if (this.data('icon-only') === 'true') {
-    this.addClass('ui-icon-only');
-  }
-  if (this.data('inline') === 'true') {
-    this.addClass('ui-inline');
-  }
-  return this;
-};
-$.fn.collapsible = function uiCollapsible() {
-  this.addClass('ui-collapsible');
-  if (this.data('collapsed') === 'true') {
-    this.addClass('closed');
-  }
-  var self = this;
-  this.children().first().addClass('ui-toggle').bind('click', function() {
-    self.toggleClass('closed');
-  });
-};
-$.fn.footer = function uiFooter() {
-  this.addClass('ui-footer').addTheme('c', false, true);
-  if (this.data('position') === 'fixed') {
-    this.addClass('ui-fixed').css({ top: (window.innerHeight - this.height()) + 'px' });
-    $fixed.push([this, this.parent('[data-role="page"]'), 'bottom']);
-  } else {
-    $fixed.push([this, this.parent('[data-role="page"]'), 'bottom-if-needed']);
-  }
-  return this;
-};
-var hidden = false;
-$(window).bind('touchmove', function onScrollStart(event) {
-  if ( ! hidden) {
-    hidden = true;
-    for (var i = 0; i < $fixed.length; i ++) {
-      var config = $fixed[i];
-      if (config[1].hasClass('collapsed')) {
-        continue;
-      }
-      if (config[2] === 'top') {
-        config[0].css({ top: '0px' });
-      } else if (config[2] === 'bottom-if-needed') {
-        if (document.body.scrollHeight > window.innerHeight) {
-          config[0].css({ position: 'relative', bottom: 'auto' });
-        }
+  },
+  collapsible: function() {
+    var $this = this;
+    var $first = $this.children().first();
+    var icons = ['arrow-d', 'arrow-r'];
+    ($this.data('collapsed') === 'true') && $this.addClass('ui-closed');
+    self.role($first.data('icon', $this.hasClass('ui-closed') ? icons[1] : icons[0]), 'button');
+    $first.bind('click', function() {
+      $this.toggleClass('ui-closed');
+      if ($this.hasClass('ui-closed')) {
+        $first.removeClass('ui-icon-' + icons[0]).addClass('ui-icon-' + icons[1]);
       } else {
-        config[0].css({ top: (document.body.scrollHeight - config[0].height()) + 'px' });
-      }
-    }
-  }
-});
-$(window).bind('scroll resize orientationchange', $.mobile.updateLayout = function uiUpdateLayout() {
-  var top = $.mobile.scrollTop(), reflow = false;
-  for (var i = 0; i < $fixed.length; i ++) {
-    var config = $fixed[i];
-    if (config[1].hasClass('collapsed')) {
-      continue;
-    }
-    if (config[2] === 'top') {
-      config[0].css({ top: top + 'px' });
-    } else if (config[2] === 'bottom-if-needed') {
-      if (document.body.scrollHeight - 5 <= window.innerHeight) {
-        config[0].css({ position: 'absolute', bottom: '0px' });
-      } else {
-        config[0].css({ position: 'relative', bottom: 'auto' });
-      }
-      reflow = true;
-    } else {
-      config[0].css({ top: (top + window.innerHeight - config[0].height()) + 'px' });
-    }
-  }
-  hidden = false;
-  if (reflow) {
-    $visible.reflow();
-  }
-  $('#loading').css({
-    width:  window.innerWidth          + 'px',
-    height: document.body.scrollHeight + 'px'
-  }).children('.ui-spinner').css({
-    top:  ($.mobile.scrollTop() + Math.round(window.innerHeight / 2)) + 'px',
-    left: Math.round(window.innerWidth  / 2) + 'px'
-  });
-});
-$(window).bind('touchend', function onScrollEnd() {
-  if (hidden) {
-    $.mobile.updateLayout();
-  }
-});
-var initialized = false;
-$.mobile.autoInitialize = true;
-$.mobile.initialize = function uiInitialize(scope) {
-  ((scope && scope.find('[data-role]')) || $('[data-role]')).each(function() {
-    var $this = $(this);
-    $this[$this.data('role')]();
-  });
-  var buttonsQuery = 'input[type="button"], input[type="submit"], button';
-  ((scope && scope.find(buttonsQuery)) || $(buttonsQuery)).each(function() {
-    $(this).button();
-  });
-  if ( ! initialized) {
-    initialized = true;
-    $(window).bind('hashchange', function(event) {
-      var value = location.hash.replace(/^#/, '');
-      if (hash !== value) {
-        hash = value;
-        $.mobile.changePage({
-          event:  event,
-          target: hash || $first
-        });
+        $first.removeClass('ui-icon-' + icons[1]).addClass('ui-icon-' + icons[0]);
       }
     });
-    if ( ! ('onhashchange' in window)) {
+  }
+};
+self.role = function(element, role) {
+  var $widget = $(element);
+  var block = self.widgets[role];
+  $widget.hasClass('ui-' + role) || (block && block.call($widget));
+  $widget.addClass('ui-widget ui-' + role);
+  ['theme', 'icon', 'icon-position', 'size'].forEach(function(type) {
+    $widget.data(type) && $widget.addClass('ui-has-' + type + ' ui-' + type + '-' + $widget.data(type));
+  });
+  var themeRegExp = /\bui-theme-(\w+)\b/;
+  var getTheme = function() { var list = themeRegExp.exec(this.className); return (list && list[1]); };
+  var parent = $widget.get(0);
+  var inheritedTheme;
+  do {
+    inheritedTheme = $(parent).data('theme');
+    if ( ! inheritedTheme && parent.className.indexOf('ui-theme-') >= 0) {
+      inheritedTheme = getTheme.call(parent);
+    }
+    if (inheritedTheme) {
+      break;
+    }
+  } while ((parent = parent.parentNode) && (parent !== document));
+  inheritedTheme || (inheritedTheme = getTheme.call(document.documentElement));
+  inheritedTheme && $widget.addClass('ui-inherit-theme-' + inheritedTheme);
+};
+self.initialize = function(scope, options) {
+  options || (options = {});
+  scope || $('html').addClass('ui-theme-' + (options.theme || 'c'));
+  (scope || $('html')).find('[data-role], input[type="button"], input[type="submit"], button').each(function() {
+    self.role(this, $(this).data('role') || 'button');
+  });
+  if ( ! scope) {
+    $(window).bind('hashchange', function(event) {
+      var value = location.hash.replace(/^#/, '');
+      if (pageHash !== value) {
+        pageHash = value;
+        self.changePage({
+          event:  event,
+          target: pageHash || $topPage
+        });
+      }
+    }).trigger('hashchange').bind('resize scroll orientationchange', function() {
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      $loading && $loading.css({
+        width:  width + 'px',
+        height: document.body.scrollHeight + 'px'
+      }).children().css({
+        top:  (uiScrollTop() + Math.round(height / 2)) + 'px',
+        left: Math.round(width / 2) + 'px'
+      });
+    });
+    if ( ! window.onhashchange) {
       var last = location.hash;
       setInterval(function() {
-        if (location.hash !== last) {
+        if (last !== location.hash) {
+          $(window).trigger('hashchange');
           last = location.hash;
-          $(window).trigger('hashchange', [null, last]);
         }
       }, 50);
     }
-    $(window).trigger('hashchange', [null, null]);
     window.scrollTo(0, 0);
   }
 };
 $(document).ready(function() {
-  if ($.mobile.autoInitialize) {
-    $.mobile.initialize();
-  }
+  self.preventInitialize || self.initialize();
 });
-})();
+}).apply(this.Zoey = {}, [window, document, location]);

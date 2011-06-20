@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang=en>
+<head>
+    <title>Zoey</title>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
+    <link rel=stylesheet href=release/zoey-0.2.min.css>
+</head>
+<body>
+
+<article id=demo data-role=page>
+    <header data-role=header data-theme=b>
+        <a href=index.html data-role=button data-rel=back data-icon=arrow-l>Back</a>
+        <h1 data-role=page-title>UI Components</h1>
+        <ul data-role=navigation>
+            <li><a href=#widgets data-role=button>This is a</a></li>
+            <li><a href=index.html data-role=button data-rel=back>Navigation</a></li>
+            <li><a href=index.html data-role=button data-rel=back>Bar</a></li>
+        </ul>
+    </header>
+    <div data-role=content>
+        <div data-role=panel data-theme=d>
+            <h2>Buttons</h2>
+            <p><a href=index.html data-role=button data-theme=a data-rel=back>Theme Option A</a></p>
+            <p><a href=index.html data-role=button data-theme=b data-rel=back>Theme Option B</a></p>
+            <p><a href=index.html data-role=button data-theme=c data-rel=back>Theme Option C</a></p>
+            <p><a href=index.html data-role=button data-theme=d data-rel=back>Theme Option D</a></p>
+            <p><a href=index.html data-role=button data-theme=e data-rel=back>Theme Option E</a></p>
+        </div>
+        <div data-role=panel data-theme=d>
+            <h2>Lists</h2>
+            <ul data-role=list data-inset=true>
+                <li data-icon=arrow-l><a href=index.html data-rel=back>This is a sample list</a></li>
+                <li data-icon=arrow-r data-icon-position=right><a href=index.html data-rel=back>select any of the items</a></li>
+                <li data-icon=arrow-l><a href=index.html data-rel=back>to go back to the</a></li>
+                <li data-icon=arrow-r data-icon-position=right><a href=index.html data-rel=back>homepage</a></li>
+            </ul>
+        </div>
+        <div data-role=panel data-theme=d>
+            <h2>Control Groups</h2>
+            <p data-role=group data-theme=e>
+                <a href=index.html data-role=button data-rel=back>Horizontal</a>
+                <a href=index.html data-role=button data-rel=back>Orientation</a>
+            </p>
+            <p data-role=group data-orientation=vertical data-theme=c>
+                <a href=index.html data-role=button data-rel=back>Vertical</a>
+                <a href=index.html data-role=button data-rel=back>Orientation</a>
+            </p>
+        </div>
+        <div data-role=panel data-theme=d>
+            <h2>Collapsible</h2>
+            <div data-role=collapsible data-collapsed=true>
+                <h3 data-theme=c>Toggle Lipsum</h3>
+                <div data-role=panel>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis libero augue, in auctor purus.</p>
+                    <p>Donec eget tempor lectus. Aenean at velit risus, sed hendrerit velit. Ut nec arcu quam, sit amet tempus tortor. Duis elit libero, congue ac semper placerat, accumsan a nisl.</p>
+                </div>
+            </div>
+        </div>
+        <div data-role=panel data-theme=d>
+            <h2>Forms</h2>
+            <ol>
+                <li data-role=field>
+                    <label>E-mail:
+                        <input type=email id=name>
+                    </label>
+                </li>
+                <li data-role=field>
+                    <label>Country:
+                        <select>
+                            <option>United Kingdom</option>
+                            <option>United States</option>
+                        </select>
+                    </label>
+                </li>
+                <li data-role=field>
+                    <ul data-role=group>
+                        <li><label data-role=button><input type=radio name=gender value=m checked> Male</label></li>
+                        <li><label data-role=button><input type=radio id=female name=gender value=f> Female</label></li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        <div data-role=panel data-theme=d>
+            <h2>Grids</h2>
+            <div data-role=grid data-size=a>
+                <div data-role=grid-row>
+                    <div data-role=grid-cell data-size=b>left</div>
+                    <div data-role=grid-cell data-size=b>right</div>
+                </div>
+            </div>
+            <hr>
+            <div data-role=grid data-size=a>
+                <div data-role=grid-row>
+                    <div data-role=grid-cell data-size=c>top-left</div>
+                    <div data-role=grid-cell data-size=c>top-centre</div>
+                    <div data-role=grid-cell data-size=c>top-right</div>
+                </div>
+                <div data-role=grid-row>
+                    <div data-role=grid-cell data-size=c>bottom-left</div>
+                    <div data-role=grid-cell data-size=c>bottom-centre</div>
+                    <div data-role=grid-cell data-size=c>bottom-right</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer data-role=footer>
+        <ul data-role=navigation>
+            <li><a href=https://github.com/StanAngeloff/zoey data-role=button rel=external>Github page</a></li>
+        </ul>
+    </footer>
+</article>
+
+<script src=release/zoey-0.2.bundle.min.js></script>
+
+</body>
+</html>
+

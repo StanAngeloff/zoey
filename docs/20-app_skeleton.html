@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang=en>
+<head>
+    <title>Zoey &mdash; App Skeleton</title>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width, minimum-scale=1, maximum-scale=1, initial-scale=1">
+    <link rel=stylesheet href=release/zoey-0.2.min.css>
+</head>
+<body>
+
+<article id=home data-role=page>
+    <header data-role=header data-theme=b>
+        <a href=../index.html data-role=button data-rel=back data-icon=arrow-l>Back</a>
+        <h1 data-role=page-title>App Skeleton</h1>
+    </header>
+    <div data-role=content>
+        <div data-role=panel data-theme=d>
+            <h2>Your First App</h2>
+            <p>Zoey mobile apps are HTML5 websites. For the purpose of this tutorial, the relevant lines from <a href=docs/10-usage.html>Usage</a> will be omitted.
+            <p>Let's begin by creating an empty HTML5 website:</p>
+            <pre>&lt;!doctype html&gt;
+&lt;html lang=en&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            <p>Every app consist of a series of pages (e.g., a log in screen). To create a page:</p>
+            <pre>&lt;!doctype html&gt;
+&lt;html lang=en&gt;
+&lt;body&gt;
+<strong>&lt;article data-role=page&gt;
+&lt;/article&gt;</strong>
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            <p>Zoey relies on <code>data-*</code> attributes to create UI components and attach behaviour. <code>data-role</code> is a special attribute assigning a particular <em>role</em> to an element of the DOM.</p>
+            <h3>The Basics</h3>
+            <p>Let's go ahead and add a header and a footer to our app:</p>
+            <pre>&lt;!doctype html&gt;
+&lt;html lang=en&gt;
+&lt;body&gt;
+&lt;article data-role=page&gt;
+<strong>&lt;header data-role=header&gt;
+&lt;/header&gt;
+&lt;footer data-role=footer&gt;
+&lt;/footer&gt;</strong>
+&lt;/article&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            <p>
+                <a href=index.html data-role=button data-icon=arrow-l>Table of Contents</a>
+            </p>
+        </div>
+    </div>
+    <footer data-role=footer>
+        <ul data-role=navigation>
+            <li><a href=https://github.com/StanAngeloff/zoey data-role=button rel=external>Fork on Github</a></li>
+        </ul>
+    </footer>
+</article>
+
+<script src=release/zoey-0.2.bundle.min.js></script>
+
+</body>
+</html>
