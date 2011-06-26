@@ -40,7 +40,7 @@ styles:
 minify:
 	@@echo 'Minifying bundle...'
 	@@cp -f scripts/zoey.js '$(RELEASE_PATH)/zoey.js'
-	@@# Save ~250 bytes
+	@@# Saves an additional ~350 bytes
 	@@sed -i -e "s/'zoey:scroll-top'/C_SCROLL_TOP/g" -e "s/var VERSION/var C_SCROLL_TOP = 'zoey:scroll-top'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'data-zoey:scroll-top'/'data-' + C_SCROLL_TOP/g" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'ui-highlight'/C_HIGHLIGHT/g" -e "s/'.ui-highlight'/'.' + C_HIGHLIGHT/g" -e "s/var VERSION/var C_HIGHLIGHT = 'ui-highlight'; \0/" "$(RELEASE_PATH)/zoey.js"
