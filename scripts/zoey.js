@@ -27,7 +27,7 @@ var self = this;
 var $loading;
 var $topPage;
 var $visiblePage;
-var $hiddenPage;
+var $previousPage;
 var $cachedPages = {};
 var $highlight = [];
 var pageSequence = 0;
@@ -64,13 +64,13 @@ self.showPage = function($page, options) {
   var id = $page.attr('id');
   if ( ! $visiblePage || $visiblePage.attr('id') !== id) {
     options || (options = {});
-    ($hiddenPage && $hiddenPage.attr('id') !== id) && $hiddenPage.trigger('pagebeforehide').trigger('pagehide');
+    ($previousPage && $previousPage.attr('id') !== id) && $previousPage.trigger('pagebeforehide').trigger('pagehide');
     uiPersistScroll($visiblePage);
     if (options.type === 'dialog') {
-      $hiddenPage = $visiblePage;
+      $previousPage = $visiblePage;
       $visiblePage && $visiblePage.addClass('ui-collapsed');
     } else {
-      $hiddenPage = null;
+      $previousPage = null;
       $visiblePage && $visiblePage.trigger('pagebeforehide').addClass('ui-collapsed').trigger('pagehide');
     }
     $highlight.length && $highlight.removeClass('ui-highlight');
@@ -163,7 +163,7 @@ self.changePage = function(options) {
 };
 self.closeDialog = function() {
   self.changePage({
-    target: $hiddenPage
+    target: $previousPage
   });
 }
 self.serialize = function(form) {
@@ -212,7 +212,7 @@ self.widgets = {
       }
       var type = $this.data('rel');
       if (type === 'back') {
-        if ($hiddenPage) {
+        if ($previousPage) {
           self.closeDialog();
         } else {
           uiPersistScroll($visiblePage);
