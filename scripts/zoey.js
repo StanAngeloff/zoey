@@ -29,7 +29,6 @@ var $topPage;
 var $visiblePage;
 var $previousPage;
 var $cachedPages = {};
-var $highlight = [];
 var pageSequence = 0;
 var pageHash;
 function uiScrollTop(offset) {
@@ -73,8 +72,8 @@ self.showPage = function($page, options) {
       $previousPage = null;
       $visiblePage && $visiblePage.trigger('pagebeforehide').addClass('ui-collapsed').trigger('pagehide');
     }
-    $highlight.length && $highlight.removeClass('ui-highlight');
-    $highlight = $page.find('[href="#' + id + '"]').addClass('ui-highlight');
+    $visiblePage && $visiblePage.find('.ui-highlight').removeClass('ui-highlight');
+    $page.find('[href="#' + id + '"]').addClass('ui-highlight');
     $page.trigger('pagebeforeshow').removeClass('ui-collapsed').trigger('pageshow');
     uiRestoreScroll($page);
     $visiblePage = $page;

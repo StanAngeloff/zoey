@@ -43,6 +43,7 @@ minify:
 	@@# Save ~250 bytes
 	@@sed -i -e "s/'zoey:scroll-top'/C_SCROLL_TOP/g" -e "s/var VERSION/var C_SCROLL_TOP = 'zoey:scroll-top'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'data-zoey:scroll-top'/'data-' + C_SCROLL_TOP/g" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'ui-highlight'/C_HIGHLIGHT/g" -e "s/'.ui-highlight'/'.' + C_HIGHLIGHT/g" -e "s/var VERSION/var C_HIGHLIGHT = 'ui-highlight'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'ui-collapsed'/C_COLLAPSED/g" -e "s/var VERSION/var C_COLLAPSED = 'ui-collapsed'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'<div>'/C_DIV/g" -e "s/var VERSION/var C_DIV = '<div>'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'hashchange'/C_HASHCHANGE/g" -e "s/var VERSION/var C_HASHCHANGE = 'hashchange'; \0/" "$(RELEASE_PATH)/zoey.js"
