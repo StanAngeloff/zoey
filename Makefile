@@ -7,12 +7,20 @@ ZOEY_VERSION=$(shell sed -n 's/var VERSION\s*=\s*\W*\([0-9.]*\).*/\1/p' scripts/
 
 .PHONY: all
 all: cleanup zepto styles minify
-	@@echo 'Done. Zoey $(ZOEY_VERSION) built in $(RELEASE_PATH)/'
+	@@$(eval SCRIPTS_SIZE=$(shell du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' | cut -f1))
+	@@$(eval STYLES_SIZE=$(shell du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' | cut -f1))
+	@@$(eval TOTAL_SIZE=$(shell echo $$(($(SCRIPTS_SIZE) + $(STYLES_SIZE)))))
+	@@echo "Zoey $(ZOEY_VERSION) built in '$(RELEASE_PATH)/'."
+	@@echo "  - Scripts = $(SCRIPTS_SIZE) bytes"
+	@@echo "  - Styles  = $(STYLES_SIZE) bytes"
+	@@echo "  + Total   = $(TOTAL_SIZE) bytes"
+	@@echo 'Done.'
 
 cleanup:
 	@@echo 'Removing release files...'
 	@@mkdir -p '$(RELEASE_PATH)/images'
 	@@rm -f '$(RELEASE_PATH)/images/'*.png
+	@@rm -f '$(RELEASE_PATH)/images/'*.gif
 	@@rm -f '$(RELEASE_PATH)/'*.js
 	@@rm -f '$(RELEASE_PATH)/'*.css
 
@@ -38,6 +46,7 @@ styles:
 	@@java -jar _assets/yuicompressor-2.4.6.jar --type css --charset utf8 -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' 'styles/zoey.css'
 	@@mkdir -p '$(RELEASE_PATH)/images'
 	@@cp -f 'styles/images/'*.png '$(RELEASE_PATH)/images/'
+	@@cp -f 'styles/images/'*.gif '$(RELEASE_PATH)/images/'
 	@@find '$(RELEASE_PATH)/images' -type f -name '*.png' -exec optipng -o7 {} &>/dev/null \;
 
 minify:
@@ -67,9 +76,9 @@ watch:
 	@@compass watch --css-dir=styles --sass-dir=styles --images-dir='styles/images' --environment=development --relative-assets --force
 
 compare-scripts:
-	@@echo "BEFORE: `du -b '$(RELEASE_PATH)/zoey-0.2.min.js' | cut -f1`"
+	@@echo "BEFORE: `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' | cut -f1`"
 	@@$(MAKE) -s -B minify
-	@@echo "AFTER:  `du -b '$(RELEASE_PATH)/zoey-0.2.min.js' | cut -f1`"
+	@@echo "AFTER:  `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' | cut -f1`"
 
 compare-styles:
 	@@echo "BEFORE: `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' | cut -f1`"

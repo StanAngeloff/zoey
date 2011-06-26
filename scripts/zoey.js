@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-var VERSION = '0.2';
+var VERSION = '0.2.1';
 var self = this;
 var $loading;
 var $topPage;
