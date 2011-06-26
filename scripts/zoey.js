@@ -65,7 +65,6 @@ self.showPage = function($page, options) {
   var id = $page.attr('id');
   if ( ! $visiblePage || $visiblePage.attr('id') !== id) {
     options || (options = {});
-    options.event && options.event.stopPropagation();
     ($hiddenPage && $hiddenPage.attr('id') !== id) && $hiddenPage.trigger('pagebeforehide').trigger('pagehide');
     uiPersistScroll($visiblePage);
     if (options.type === 'dialog') {
@@ -121,24 +120,27 @@ self.createPages = function(html, options) {
 self.changePage = function(options) {
   var $page;
   options || (options = {});
-  if (typeof (options.target) === 'string') {
-    options.target = options.target.replace(/^#/, '');
+  var event = options.event;
+  var target = options.target;
+  var method = options.method;
+  if (typeof (target) === 'string') {
+    target = target.replace(/^#/, '');
     $('[data-role="page"]').each(function() {
-      if ($(this).attr('id') === options.target) {
+      if ($(this).attr('id') === target) {
         $page = $(this);
-        pageHash = options.target;
+        pageHash = target;
       }
     });
     if ( ! $page) {
-      if ($cachedPages[options.target] && options.method !== 'POST') {
-        self.changePage($.extend(options, { target: $cachedPages[options.target] }));
+      if ($cachedPages[target] && method !== 'POST') {
+        self.changePage($.extend(options, { target: $cachedPages[target] }));
       } else {
         self.loading(true);
         $.ajax({
           dataType: 'html',
           data:     options.data,
-          type:     (options.method && options.method.toUpperCase()) || 'GET',
-          url:      options.target,
+          type:     (method && method.toUpperCase()) || 'GET',
+          url:      target,
           success:  function(html, code, xhr) {
             self.createPages(html, options);
           },
@@ -147,15 +149,17 @@ self.changePage = function(options) {
             alert('Whoops! We failed to load the requested page from the server. Please make sure you are connected to the internet and try again.\n\n[' + xhr.status + '] ' + (exception || xhr.statusText));
           }
         });
+        event && event.stopPropagation();
       }
     }
   } else {
-    $page = options.target;
+    $page = target;
   }
   if ($page) {
+    event && event.stopPropagation();
     self.showPage($page, options);
   } else {
-    options.event && options.event.preventDefault();
+    event && event.preventDefault();
   }
 };
 self.closeDialog = function() {
