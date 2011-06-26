@@ -14,6 +14,7 @@ $zoey-default-header-padding:     8px !default;
 $zoey-default-body-padding:       10px !default;
 $zoey-default-icon-size:          16px !default;
 $zoey-default-highlight-color:    nth($zoey-colors, 2) !default;
+$zoey-default-border-radius:      8px !default;
 
 // PREREQUISITES -------------------------------------------------------------
 
@@ -74,6 +75,12 @@ $icons: sprite-map('icons/*.png', $spacing: $zoey-default-icon-size * 8);
   @return if($list, $list, unquote($before + 'none' + $after));
 }
 
+// OVERRIDES -----------------------------------------------------------------
+
+@mixin border-radius($radius: $default-border-radius) {
+  @include experimental(border-radius, $radius, not -moz, -webkit, official);
+}
+
 // GENERAL -------------------------------------------------------------------
 
 html {
@@ -106,7 +113,7 @@ html {
   z-index: 999;
   top: 0;
   left: 0;
-  background-color: rgba(#000, 0.5);
+  background: rgba(#000, 0.5);
   -webkit-animation-name: uiDelayedFadeIn;
   -webkit-animation-duration: 2s;
   -webkit-animation-iteration-count: 1;
@@ -115,7 +122,7 @@ html {
   .ui-spinner {
     $image: 'background-loading.png';
     $size: image-width($image);
-    background: transparent image-url($image) no-repeat 0 0;
+    background: image-url($image) no-repeat 0 0;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -134,7 +141,7 @@ html {
 
 .ui-header {
   @include clearfix;
-  background: transparent none repeat-x 0 0;
+  background: none repeat-x 0 0;
   @include background-image(linear-gradient(
     rgba(#fff, opacity-level(25))   0%,
     rgba(#fff, 0)                  50%,
@@ -174,8 +181,8 @@ html {
       &:last-child  > .ui-button { border-right:  none; }
     }
 
-    .ui-content &:first-child > .ui-button { @include border-radius(8px 0 0 8px); }
-    .ui-content &:last-child  > .ui-button { @include border-radius(0 8px 8px 0); }
+    .ui-content &:first-child > .ui-button { @include border-radius($zoey-default-border-radius 0 0 $zoey-default-border-radius); }
+    .ui-content &:last-child  > .ui-button { @include border-radius(0 $zoey-default-border-radius $zoey-default-border-radius 0); }
   }
 
   .ui-header > & { margin-bottom: -1px; }
@@ -183,7 +190,7 @@ html {
 }
 
 .ui-group {
-  @include border-radius(8px);
+  @include border-radius($zoey-default-border-radius);
   @include clearfix;
   width: 100%;
 
@@ -196,10 +203,10 @@ html {
       @include border-radius(0);
     }
 
-    &.ui-button:first-child, &:first-child > .ui-button { @include border-radius(8px 0 0 8px); }
+    &.ui-button:first-child, &:first-child > .ui-button { @include border-radius($zoey-default-border-radius 0 0 $zoey-default-border-radius); }
     &.ui-button:last-child,  &:last-child  > .ui-button {
       border-right-width: 1px;
-      @include border-radius(0 8px 8px 0);
+      @include border-radius(0 $zoey-default-border-radius $zoey-default-border-radius 0);
     }
   }
 
@@ -213,17 +220,17 @@ html {
 
     &.ui-button:first-child, &:first-child > .ui-button {
       border-top-width: 1px;
-      @include border-radius(8px 8px 0 0);
+      @include border-radius($zoey-default-border-radius $zoey-default-border-radius 0 0);
     }
     &.ui-button:last-child,  &:last-child  > .ui-button {
       border-bottom-width: 1px;
-      @include border-radius(0 0 8px 8px);
+      @include border-radius(0 0 $zoey-default-border-radius $zoey-default-border-radius);
     }
   }
 }
 
 .ui-list {
-  @include border-radius(8px);
+  @include border-radius($zoey-default-border-radius);
 
   & > .ui-button {
     border-bottom-width: 0;
@@ -233,11 +240,11 @@ html {
 
   & > .ui-button:first-child {
     border-top-width: 1px;
-    @include border-radius(8px 8px 0 0);
+    @include border-radius($zoey-default-border-radius $zoey-default-border-radius 0 0);
   }
   & > .ui-button:last-child {
     border-bottom-width: 1px;
-    @include border-radius(0 0 8px 8px);
+    @include border-radius(0 0 $zoey-default-border-radius $zoey-default-border-radius);
   }
 
   .ui-content > & {
@@ -267,7 +274,7 @@ html {
     inset 0 -1px 1px rgba(#000, opacity-level(50))
   );
   border: 1px solid rgba(#000, opacity-level(25));
-  @include border-radius(8px);
+  @include border-radius($zoey-default-border-radius);
   color: inherit;
   cursor: pointer;
   padding-left: $zoey-default-body-padding;
@@ -349,9 +356,9 @@ html {
   textarea,
   select {
     $box-height: rhythm() * 1.25;
-    background-color: #fff;
+    background: #fff;
     border: 1px solid rgba(#000, opacity-level(25));
-    @include border-radius(4px);
+    @include border-radius(round($zoey-default-border-radius / 2));
     color: #000;
     margin: 0;
     height: $box-height;
@@ -396,7 +403,7 @@ html {
 }
 
 .ui-panel {
-  @include border-radius(10px);
+  @include border-radius($zoey-default-border-radius);
   padding: $zoey-default-body-padding;
   margin: $zoey-default-body-padding;
   border: 1px solid rgba(#000, opacity-level(25));
@@ -437,7 +444,7 @@ html {
   }
 
   & > .ui-button + .ui-panel {
-    @include border-radius(0 0 10px 10px);
+    @include border-radius(0 0 $zoey-default-border-radius $zoey-default-border-radius);
     border-top: none;
     margin-top: $negative-margin;
     padding-top: $zoey-default-body-padding * 2;

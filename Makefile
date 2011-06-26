@@ -32,6 +32,9 @@ zepto:
 styles:
 	@@echo 'Compiling default styles...'
 	@@compass compile --quiet --css-dir=styles --sass-dir=styles --images-dir='styles/images' --environment=production --output-style=compressed --relative-assets --force
+	@@# Saves an additional ~50 bytes
+	@@sed -i -e "s/,applet,object,/,/g" 'styles/zoey.css'
+	@@sed -i -e "s/body{[^}]*}html > body/body/g" 'styles/zoey.css'
 	@@java -jar _assets/yuicompressor-2.4.6.jar --type css --charset utf8 -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' 'styles/zoey.css'
 	@@mkdir -p '$(RELEASE_PATH)/images'
 	@@cp -f 'styles/images/'*.png '$(RELEASE_PATH)/images/'
