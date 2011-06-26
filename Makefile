@@ -63,7 +63,12 @@ minify:
 watch:
 	@@compass watch --css-dir=styles --sass-dir=styles --images-dir='styles/images' --environment=development --relative-assets --force
 
-benchmark:
-	@@echo "BEFORE: `du -b release/zoey-0.2.min.js | cut -f1`"
+compare-scripts:
+	@@echo "BEFORE: `du -b '$(RELEASE_PATH)/zoey-0.2.min.js' | cut -f1`"
 	@@$(MAKE) -s -B minify
-	@@echo "AFTER:  `du -b release/zoey-0.2.min.js | cut -f1`"
+	@@echo "AFTER:  `du -b '$(RELEASE_PATH)/zoey-0.2.min.js' | cut -f1`"
+
+compare-styles:
+	@@echo "BEFORE: `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' | cut -f1`"
+	@@$(MAKE) -s -B styles
+	@@echo "AFTER:  `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' | cut -f1`"
