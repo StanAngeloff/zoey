@@ -255,15 +255,22 @@ self.widgets = {
   },
   group: function() {
     var orientation = this.data('orientation');
+    var onChange;
     this.addClass('ui-orientation-' + (orientation || 'horizontal'));
     (orientation === 'vertical') || self.widgets.navigation.call(this);
     var $children = this.find('input');
-    this.delegate('input', 'change', function() {
+    this.delegate('input', 'change', onChange = function() {
       $children.each(function() {
-        $(this).closest('[data-role]')[this.checked ? 'addClass' : 'removeClass']('ui-highlight');
+        var parent = this;
+        do {
+          if ($(parent).data('role')) {
+            $(parent)[this.checked ? 'addClass' : 'removeClass']('ui-highlight');
+            break;
+          }
+        } while ((parent = parent.parentNode) && (parent !== document));
       });
     });
-    $children.first().trigger('change');
+    onChange();
   },
   collapsible: function() {
     var $this = this;
