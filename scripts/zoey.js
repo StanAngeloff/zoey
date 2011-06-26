@@ -32,7 +32,6 @@ var $cachedPages = {};
 var $highlight = [];
 var pageSequence = 0;
 var pageHash;
-var $fixedWidgets = [];
 function uiScrollTop(offset) {
   if (arguments.length) {
     document.body.scrollTop = document.documentElement.scrollTop = window.pageYOffset = offset;
