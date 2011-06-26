@@ -94,6 +94,12 @@ html {
 
     &, &:focus { outline: none; }
   }
+
+  &.ui-splash {
+    background: image-url('background-splash.gif') no-repeat 50% 64px;
+
+    body { visibility: hidden; }
+  }
 }
 
 @-webkit-keyframes uiDelayedFadeIn {

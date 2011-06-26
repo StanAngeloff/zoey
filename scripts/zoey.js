@@ -306,9 +306,10 @@ self.role = function(element, role) {
   inheritedTheme && $widget.addClass('ui-inherit-theme-' + inheritedTheme);
 };
 self.initialize = function(scope, options) {
+  var $html = $('html');
   options || (options = {});
-  scope || $('html').addClass('ui-theme-' + (options.theme || 'c'));
-  (scope || $('html')).find('[data-role], input[type="button"], input[type="submit"], button').each(function() {
+  scope || $html.addClass('ui-theme-' + (options.theme || 'c'));
+  (scope || $html).find('[data-role], input[type="button"], input[type="submit"], button').each(function() {
     self.role(this, $(this).data('role') || 'button');
   });
   if ( ! scope) {
@@ -342,6 +343,7 @@ self.initialize = function(scope, options) {
       }, 50);
     }
     window.scrollTo(0, 0);
+    $html.removeClass('ui-splash');
   }
 };
 $(document).ready(function() {
