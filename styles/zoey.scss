@@ -1,21 +1,23 @@
 // USER CONFIGURABLE OPTIONS (adjust to your liking) -------------------------
 
-$base-colors:        #000 #5780d8 #ccc #fff #fd4 !default;
-$base-font-size:     16px !default;
-$base-font-family:   'Trebuchet MS', TrebuchetMS, sans-serif !default;
-$base-opacity-scale: 1 !default;
-$base-icons:         arrow-r arrow-d arrow-l !default;
+$zoey-colors:        #000 #5780d8 #ccc #fff #fd4 !default;
+$zoey-font-size:     16px !default;
+$zoey-font-family:   'Trebuchet MS', TrebuchetMS, sans-serif !default;
+$zoey-opacity-scale: 1 !default;
+$zoey-icons:         arrow-r arrow-d arrow-l !default;
 
 // DEFAULT OPTIONS (you wouldn't normally change these) ----------------------
 
-$default-darkness-threshold: 60% !default;
-$default-shadow-widgets: page-title button !default;
-$default-header-padding: 8px !default;
-$default-body-padding: 10px !default;
-$default-icon-size: 16px !default;
-$default-highlight-color: nth($base-colors, 2) !default;
+$zoey-default-darkness-threshold: 60% !default;
+$zoey-default-shadow-widgets:     page-title button !default;
+$zoey-default-header-padding:     8px !default;
+$zoey-default-body-padding:       10px !default;
+$zoey-default-icon-size:          16px !default;
+$zoey-default-highlight-color:    nth($zoey-colors, 2) !default;
 
 // PREREQUISITES -------------------------------------------------------------
+
+$base-font-size: $zoey-font-size;
 
 @import 'compass';
 @import 'compass/layout/grid-background';
@@ -28,13 +30,13 @@ $legacy-support-for-ie6:             false;
 $legacy-support-for-ie7:             false;
 $legacy-support-for-ie8:             false;
 
-$blueprint-font-family: $base-font-family;
-$blueprint-font-size:   $base-font-size;
+$blueprint-font-family: $zoey-font-family;
+$blueprint-font-size:   $zoey-font-size;
 
 @include global-reset;
 @include establish-baseline;
 
-$icons: sprite-map('icons/*.png', $spacing: $default-icon-size * 8);
+$icons: sprite-map('icons/*.png', $spacing: $zoey-default-icon-size * 8);
 
 // FUNCTIONS -----------------------------------------------------------------
 
@@ -48,16 +50,16 @@ $icons: sprite-map('icons/*.png', $spacing: $default-icon-size * 8);
 }
 
 @function opacity-level($level) {
-  @return clamp(($base-opacity-scale * $level) / 100, 0, 1);
+  @return clamp(($zoey-opacity-scale * $level) / 100, 0, 1);
 }
 
 @function threshold($index) {
-  @return (lightness(nth($base-colors, $index)) >= $default-darkness-threshold);
+  @return (lightness(nth($zoey-colors, $index)) >= $zoey-default-darkness-threshold);
 }
 
 @function themes($type, $before: '.ui-theme-', $after: '') {
   $list: false;
-  @for $index from 1 through length($base-colors) {
+  @for $index from 1 through length($zoey-colors) {
     $accept: false;
     @if threshold($index) {
       $accept: if($type == 'light', true, false);
@@ -76,8 +78,8 @@ $icons: sprite-map('icons/*.png', $spacing: $default-icon-size * 8);
 
 html {
   * {
-    @include adjust-font-size-to($base-font-size);
-    font-family: $base-font-family;
+    @include adjust-font-size-to($zoey-font-size);
+    font-family: $zoey-font-family;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: rgba(#000, 0);
     -webkit-text-size-adjust: none;
@@ -147,7 +149,7 @@ html {
 .ui-page-title {
   font-weight: bold;
   text-align: center;
-  padding: $default-header-padding ($default-header-padding / 2);
+  padding: $zoey-default-header-padding ($zoey-default-header-padding / 2);
 }
 
 .ui-navigation {
@@ -268,8 +270,8 @@ html {
   @include border-radius(8px);
   color: inherit;
   cursor: pointer;
-  padding-left: $default-body-padding;
-  padding-right: $default-body-padding;
+  padding-left: $zoey-default-body-padding;
+  padding-right: $zoey-default-body-padding;
   text-align: center;
   text-decoration: none;
 
@@ -294,7 +296,7 @@ html {
   .ui-header > & {
     @extend .ui-inline;
     float: left;
-    margin: $default-header-padding ($default-header-padding / 2);
+    margin: $zoey-default-header-padding ($zoey-default-header-padding / 2);
 
     &.ui-align-right { float: right; }
   }
@@ -306,33 +308,33 @@ html {
      (c) Christopher M. Eppstein
      http://compass-style.org */
   #{headers(all)} { font-weight: normal; text-align: center; }
-  h1 { @include adjust-font-size-to($base-font-size * 2); }
-  h2 { @include adjust-font-size-to($base-font-size * 1.8); }
-  h3 { @include adjust-font-size-to($base-font-size * 1.6); }
-  h4 { @include adjust-font-size-to($base-font-size * 1.4); }
-  h5 { @include adjust-font-size-to($base-font-size * 1.2); }
+  h1 { @include adjust-font-size-to($zoey-font-size * 2); }
+  h2 { @include adjust-font-size-to($zoey-font-size * 1.8); }
+  h3 { @include adjust-font-size-to($zoey-font-size * 1.6); }
+  h4 { @include adjust-font-size-to($zoey-font-size * 1.4); }
+  h5 { @include adjust-font-size-to($zoey-font-size * 1.2); }
   h6 { font-weight: bold; }
-  p  { margin: 0 0 $default-body-padding; }
+  p  { margin: 0 0 $zoey-default-body-padding; }
   a#{$not-widgets}  { text-decoration: underline; @include link-colors($link-color, $link-hover-color, $link-active-color, $link-visited-color, $link-focus-color); }
-  blockquote        { margin: $default-body-padding; color: $alt-text-color; font-style: italic; }
+  blockquote        { margin: $zoey-default-body-padding; color: $alt-text-color; font-style: italic; }
   strong, dfn       { font-weight: bold; }
   em, dfn           { font-style: italic; }
   sup, sub          { line-height: 0; }
   abbr, acronym     { border-bottom: 1px dotted #666666; }
-  address           { margin: 0 0 $default-body-padding; font-style: italic; }
+  address           { margin: 0 0 $zoey-default-body-padding; font-style: italic; }
   del               { color: $alt-text-color; }
-  pre               { margin: $default-body-padding 0; white-space: pre; }
+  pre               { margin: $zoey-default-body-padding 0; white-space: pre; }
   pre, code, tt     { @include fixed-width-text; }
   li ul#{$not-widgets},
   li ol             { margin: 0; }
   ul#{$not-widgets},
-  ol#{$not-widgets} { margin: 0 $default-body-padding $default-body-padding 0; padding-left: $default-body-padding * 2; }
+  ol#{$not-widgets} { margin: 0 $zoey-default-body-padding $zoey-default-body-padding 0; padding-left: $zoey-default-body-padding * 2; }
   ul#{$not-widgets} { list-style-type: disc; }
   ol#{$not-widgets} { list-style-type: decimal; }
-  dl                { margin: 0 0 $default-body-padding 0;
+  dl                { margin: 0 0 $zoey-default-body-padding 0;
     dt              { font-weight: bold; }
-    dd              { margin-left: $default-body-padding; } }
-  table             { margin-bottom: $default-body-padding; width: 100%; }
+    dd              { margin-left: $zoey-default-body-padding; } }
+  table             { margin-bottom: $zoey-default-body-padding; width: 100%; }
   th                { font-weight: bold; }
   thead th          { background: $blueprint-table-header-color; }
   th, td, caption   { padding: 4px 10px 4px 5px; }
@@ -374,7 +376,7 @@ html {
       outline: none;
       @include box-shadow(
         inset 0 1px 2px rgba(#fff, opacity-level(10)),
-        0 0 8px rgba($default-highlight-color, opacity-level(75))
+        0 0 8px rgba($zoey-default-highlight-color, opacity-level(75))
       );
       border-color: rgba(#000, opacity-level(50));
     }
@@ -382,21 +384,21 @@ html {
 
   select {
     background: sprite($icons, 'arrow-d-dark', 5px, 8px) no-repeat;
-    padding-left: 5px + $default-icon-size + 5px;
+    padding-left: 5px + $zoey-default-icon-size + 5px;
   }
 }
 
 .ui-field {
   list-style-type: none;
-  margin-left: $default-body-padding * -2;
-  margin-right: $default-body-padding * -1;
-  margin-bottom: $default-body-padding;
+  margin-left: $zoey-default-body-padding * -2;
+  margin-right: $zoey-default-body-padding * -1;
+  margin-bottom: $zoey-default-body-padding;
 }
 
 .ui-panel {
   @include border-radius(10px);
-  padding: $default-body-padding;
-  margin: $default-body-padding;
+  padding: $zoey-default-body-padding;
+  margin: $zoey-default-body-padding;
   border: 1px solid rgba(#000, opacity-level(25));
   @include background-image(linear-gradient(
     rgba(#fff, opacity-level(50)) 0%,
@@ -410,7 +412,7 @@ html {
 }
 
 .ui-collapsible {
-  $negative-margin: (($default-body-padding + 1) * -1);
+  $negative-margin: (($zoey-default-body-padding + 1) * -1);
 
   &.ui-closed {
     * { @extend .ui-collapsed; }
@@ -424,7 +426,7 @@ html {
   &:not(.ui-closed) > .ui-button { border-bottom: none; }
 
   &.ui-panel {
-    & > .ui-button { margin: $negative-margin $negative-margin $default-body-padding $negative-margin; }
+    & > .ui-button { margin: $negative-margin $negative-margin $zoey-default-body-padding $negative-margin; }
 
     & > *:last-child {
       margin-bottom: 0;
@@ -438,7 +440,7 @@ html {
     @include border-radius(0 0 10px 10px);
     border-top: none;
     margin-top: $negative-margin;
-    padding-top: $default-body-padding * 2;
+    padding-top: $zoey-default-body-padding * 2;
 
     & > *:last-child {
       margin-bottom: 0;
@@ -460,7 +462,7 @@ html {
 // SHADOWS -------------------------------------------------------------------
 
 $widgets-list: false;
-@each $widget in $default-shadow-widgets {
+@each $widget in $zoey-default-shadow-widgets {
   $append: #{themes(dark, '.ui-inherit-theme-', '.ui-#{$widget}')};
   $widgets-list: if($widgets-list, join($widgets-list, $append, comma), $append);
 }
@@ -470,7 +472,7 @@ $widgets-list: false;
 }
 
 $widgets-list: false;
-@each $widget in $default-shadow-widgets {
+@each $widget in $zoey-default-shadow-widgets {
   $append: #{themes(light, '.ui-inherit-theme-', '.ui-#{$widget}')};
   $widgets-list: if($widgets-list, join($widgets-list, $append, comma), $append);
 }
@@ -488,24 +490,24 @@ $widgets-list: false;
     content: "";
     display: block;
     position: absolute;
-    width: $default-icon-size;
-    height: $default-icon-size;
-    margin-top: $default-icon-size / 2 * -1;
+    width: $zoey-default-icon-size;
+    height: $zoey-default-icon-size;
+    margin-top: $zoey-default-icon-size / 2 * -1;
     top: 50%;
-    left: $default-body-padding;
+    left: $zoey-default-body-padding;
   }
 }
 
-.ui-has-icon:not(.ui-icon-position-right) { padding-left:  $default-body-padding * 2 + $default-icon-size; }
+.ui-has-icon:not(.ui-icon-position-right) { padding-left:  $zoey-default-body-padding * 2 + $zoey-default-icon-size; }
 .ui-has-icon.ui-icon-position-right {
-  padding-right: $default-body-padding * 2 + $default-icon-size;
+  padding-right: $zoey-default-body-padding * 2 + $zoey-default-icon-size;
   &:before {
     left: auto;
-    right: $default-body-padding;
+    right: $zoey-default-body-padding;
   }
 }
 
-@each $icon in $base-icons {
+@each $icon in $zoey-icons {
   #{themes(dark,  '.ui-inherit-theme-', '.ui-icon-#{$icon}:before')} { background: sprite($icons, '#{$icon}-light'); }
   #{themes(light, '.ui-inherit-theme-', '.ui-icon-#{$icon}:before')} { background: sprite($icons, '#{$icon}-dark'); }
 }
@@ -538,14 +540,14 @@ $widgets-list: false;
 
 // THEMES --------------------------------------------------------------------
 
-@for $index from 1 through length($base-colors) {
-  $base-color: nth($base-colors, $index);
+@for $index from 1 through length($zoey-colors) {
+  $zoey-color: nth($zoey-colors, $index);
 
-  .ui-theme-#{letter($index)} { background-color: $base-color; }
+  .ui-theme-#{letter($index)} { background-color: $zoey-color; }
   @if threshold($index) {
-    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#000, $base-color, 10%); }
+    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#000, $zoey-color, 10%); }
   } @else {
-    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#fff, $base-color, 10%); }
+    .ui-inherit-theme-#{letter($index)}.ui-highlight { background-color: mix(#fff, $zoey-color, 10%); }
   }
 
   #{themes(dark)}  { color: #fff; }
