@@ -7,12 +7,20 @@ ZOEY_VERSION=$(shell sed -n 's/var VERSION\s*=\s*\W*\([0-9.]*\).*/\1/p' scripts/
 
 .PHONY: all
 all: cleanup zepto styles minify
-	@@echo 'Done. Zoey $(ZOEY_VERSION) built in $(RELEASE_PATH)/'
+	@@$(eval SCRIPTS_SIZE=$(shell du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' | cut -f1))
+	@@$(eval STYLES_SIZE=$(shell du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' | cut -f1))
+	@@$(eval TOTAL_SIZE=$(shell echo $$(($(SCRIPTS_SIZE) + $(STYLES_SIZE)))))
+	@@echo "Zoey $(ZOEY_VERSION) built in '$(RELEASE_PATH)/'."
+	@@echo "  - Scripts = $(SCRIPTS_SIZE) bytes"
+	@@echo "  - Styles  = $(STYLES_SIZE) bytes"
+	@@echo "  + Total   = $(TOTAL_SIZE) bytes"
+	@@echo 'Done.'
 
 cleanup:
 	@@echo 'Removing release files...'
 	@@mkdir -p '$(RELEASE_PATH)/images'
 	@@rm -f '$(RELEASE_PATH)/images/'*.png
+	@@rm -f '$(RELEASE_PATH)/images/'*.gif
 	@@rm -f '$(RELEASE_PATH)/'*.js
 	@@rm -f '$(RELEASE_PATH)/'*.css
 
@@ -32,17 +40,22 @@ zepto:
 styles:
 	@@echo 'Compiling default styles...'
 	@@compass compile --quiet --css-dir=styles --sass-dir=styles --images-dir='styles/images' --environment=production --output-style=compressed --relative-assets --force
+	@@# Saves an additional ~50 bytes
+	@@sed -i -e "s/,applet,object,/,/g" 'styles/zoey.css'
+	@@sed -i -e "s/body{[^}]*}html > body/body/g" 'styles/zoey.css'
 	@@java -jar _assets/yuicompressor-2.4.6.jar --type css --charset utf8 -o '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' 'styles/zoey.css'
 	@@mkdir -p '$(RELEASE_PATH)/images'
 	@@cp -f 'styles/images/'*.png '$(RELEASE_PATH)/images/'
+	@@cp -f 'styles/images/'*.gif '$(RELEASE_PATH)/images/'
 	@@find '$(RELEASE_PATH)/images' -type f -name '*.png' -exec optipng -o7 {} &>/dev/null \;
 
 minify:
 	@@echo 'Minifying bundle...'
 	@@cp -f scripts/zoey.js '$(RELEASE_PATH)/zoey.js'
-	@@# Save ~250 bytes
+	@@# Saves an additional ~350 bytes
 	@@sed -i -e "s/'zoey:scroll-top'/C_SCROLL_TOP/g" -e "s/var VERSION/var C_SCROLL_TOP = 'zoey:scroll-top'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'data-zoey:scroll-top'/'data-' + C_SCROLL_TOP/g" "$(RELEASE_PATH)/zoey.js"
+	@@sed -i -e "s/'ui-highlight'/C_HIGHLIGHT/g" -e "s/'.ui-highlight'/'.' + C_HIGHLIGHT/g" -e "s/var VERSION/var C_HIGHLIGHT = 'ui-highlight'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'ui-collapsed'/C_COLLAPSED/g" -e "s/var VERSION/var C_COLLAPSED = 'ui-collapsed'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'<div>'/C_DIV/g" -e "s/var VERSION/var C_DIV = '<div>'; \0/" "$(RELEASE_PATH)/zoey.js"
 	@@sed -i -e "s/'hashchange'/C_HASHCHANGE/g" -e "s/var VERSION/var C_HASHCHANGE = 'hashchange'; \0/" "$(RELEASE_PATH)/zoey.js"
@@ -62,7 +75,12 @@ minify:
 watch:
 	@@compass watch --css-dir=styles --sass-dir=styles --images-dir='styles/images' --environment=development --relative-assets --force
 
-benchmark:
-	@@echo "BEFORE: `du -b release/zoey-0.2.min.js | cut -f1`"
+compare-scripts:
+	@@echo "BEFORE: `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' | cut -f1`"
 	@@$(MAKE) -s -B minify
-	@@echo "AFTER:  `du -b release/zoey-0.2.min.js | cut -f1`"
+	@@echo "AFTER:  `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.js' | cut -f1`"
+
+compare-styles:
+	@@echo "BEFORE: `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' | cut -f1`"
+	@@$(MAKE) -s -B styles
+	@@echo "AFTER:  `du -b '$(RELEASE_PATH)/zoey-$(ZOEY_VERSION).min.css' | cut -f1`"
