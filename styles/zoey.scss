@@ -416,6 +416,16 @@ html {
     margin-left: 0;
     margin-right: 0;
   }
+
+  $list: false;
+  @for $index from 1 through length($zoey-colors) {
+    @if lightness(nth($zoey-colors, $index)) == 100% {
+      $list: if($list, join($list, letter($index), comma), letter($index));
+    }
+  }
+  @if $list {
+    &.ui-inherit-theme-#{$list} { background-image: none; }
+  }
 }
 
 .ui-collapsible {
